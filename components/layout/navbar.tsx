@@ -31,29 +31,40 @@ export function Navbar() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-border bg-background/95 backdrop-blur-sm">
-      <div className="flex h-full items-center justify-between gap-4 px-4 sm:px-6 lg:pl-64">
-        {/* Left: Search */}
-        <div className="flex-1 max-w-md">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder="Search campaigns, volunteers..."
-              className="pl-10 bg-muted border-0 focus-visible:ring-1"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onFocus={() => setSearchOpen(true)}
-              onBlur={() => setTimeout(() => setSearchOpen(false), 200)}
-            />
-            {searchOpen && searchQuery && (
-              <div className="absolute top-12 left-0 right-0 bg-card border border-border rounded-lg shadow-lg z-50 p-2">
-                <div className="text-xs text-muted-foreground p-2">
-                  Search results for "{searchQuery}"
+      <div className="flex h-full items-center justify-between gap-4 px-4 sm:px-6 lg:pl-8">
+        {/* Left: Logo + Search */}
+        <div className="flex items-center gap-4 flex-1 min-w-0">
+          {/* Logo */}
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold shadow-md">
+              J
+            </div>
+            <span className="text-lg font-bold text-foreground hidden sm:inline">JanSetu</span>
+          </div>
+
+          {/* Search */}
+          <div className="flex-1 max-w-md">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder="Search campaigns, volunteers..."
+                className="pl-10 bg-muted border-0 focus-visible:ring-1"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => setSearchOpen(true)}
+                onBlur={() => setTimeout(() => setSearchOpen(false), 200)}
+              />
+              {searchOpen && searchQuery && (
+                <div className="absolute top-12 left-0 right-0 bg-card border border-border rounded-lg shadow-lg z-50 p-2">
+                  <div className="text-xs text-muted-foreground p-2">
+                    Search results for "{searchQuery}"
+                  </div>
+                  <div className="text-xs text-muted-foreground p-2">
+                    (AI search feature coming soon)
+                  </div>
                 </div>
-                <div className="text-xs text-muted-foreground p-2">
-                  (AI search feature coming soon)
-                </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
 

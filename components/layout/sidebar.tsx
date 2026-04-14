@@ -114,16 +114,6 @@ export function Sidebar() {
           isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
       >
-        {/* Logo */}
-        <div className="flex items-center justify-between border-b border-border px-6 py-6">
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold shadow-md">
-              J
-            </div>
-            <span className="text-lg font-bold text-foreground">JanSetu</span>
-          </div>
-        </div>
-
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto px-4 py-6">
           <div className="space-y-1">
