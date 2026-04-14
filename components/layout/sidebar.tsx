@@ -29,8 +29,8 @@ const MENU_ITEMS = [
   },
   {
     icon: Map,
-    label: 'Map',
-    href: '/map',
+    label: 'Crisis Map',
+    href: '/crisis-map',
   },
   {
     icon: Zap,
