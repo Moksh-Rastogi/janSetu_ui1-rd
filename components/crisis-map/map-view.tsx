@@ -98,11 +98,12 @@ const LeafletMap = dynamic(() => import('./leaflet-map').then((mod) => mod.Leafl
   ),
 })
 
-// Mock data for markers
-const MOCK_MARKERS: MarkerData[] = [
+// Mock data for markers with city and coordinates
+const MOCK_MARKERS: (MarkerData & { city: string; coords: [number, number] })[] = [
+  // Delhi Issues
   {
     id: '1',
-    title: 'Flood Relief Camp - District A',
+    title: 'Flood Relief Camp - North Delhi',
     category: 'disaster',
     severity: 'critical',
     peopleAffected: 5200,
@@ -114,10 +115,12 @@ const MOCK_MARKERS: MarkerData[] = [
       { name: 'Amit Kumar', role: 'Volunteer Coordinator' },
     ],
     position: { x: 35, y: 30 },
+    city: 'delhi',
+    coords: [28.7041, 77.1025],
   },
   {
     id: '2',
-    title: 'Medical Emergency - Village B',
+    title: 'Medical Emergency - South Delhi',
     category: 'health',
     severity: 'high',
     peopleAffected: 800,
@@ -128,10 +131,13 @@ const MOCK_MARKERS: MarkerData[] = [
       { name: 'Kiran Joshi', role: 'Nurse' },
     ],
     position: { x: 65, y: 45 },
+    city: 'delhi',
+    coords: [28.5245, 77.2066],
   },
+  // Mumbai Issues
   {
     id: '3',
-    title: 'Food Distribution - Area C',
+    title: 'Food Distribution - Central Mumbai',
     category: 'food',
     severity: 'medium',
     peopleAffected: 1500,
@@ -142,10 +148,12 @@ const MOCK_MARKERS: MarkerData[] = [
       { name: 'Vikram Singh', role: 'Kitchen Head' },
     ],
     position: { x: 50, y: 60 },
+    city: 'mumbai',
+    coords: [19.0176, 72.8562],
   },
   {
     id: '4',
-    title: 'School Reconstruction - Town D',
+    title: 'School Reconstruction - Navi Mumbai',
     category: 'education',
     severity: 'low',
     peopleAffected: 300,
@@ -156,10 +164,13 @@ const MOCK_MARKERS: MarkerData[] = [
       { name: 'Rahul Verma', role: 'Education Coordinator' },
     ],
     position: { x: 25, y: 70 },
+    city: 'mumbai',
+    coords: [19.0330, 73.0297],
   },
+  // Chennai Issues
   {
     id: '5',
-    title: 'Cyclone Response - Coastal Area E',
+    title: 'Cyclone Response - North Chennai',
     category: 'disaster',
     severity: 'critical',
     peopleAffected: 8000,
@@ -171,10 +182,13 @@ const MOCK_MARKERS: MarkerData[] = [
       { name: 'Suresh Kumar', role: 'Logistics Manager' },
     ],
     position: { x: 75, y: 25 },
+    city: 'chennai',
+    coords: [13.1478, 80.2582],
   },
+  // Bangalore Issues
   {
     id: '6',
-    title: 'Malnutrition Camp - Rural F',
+    title: 'Malnutrition Camp - South Bangalore',
     category: 'health',
     severity: 'high',
     peopleAffected: 450,
@@ -185,10 +199,13 @@ const MOCK_MARKERS: MarkerData[] = [
       { name: 'Arjun Menon', role: 'Health Worker' },
     ],
     position: { x: 20, y: 40 },
+    city: 'bangalore',
+    coords: [12.8988, 77.5764],
   },
+  // Kolkata Issues
   {
     id: '7',
-    title: 'Community Kitchen - Slum G',
+    title: 'Community Kitchen - Central Kolkata',
     category: 'food',
     severity: 'medium',
     peopleAffected: 2000,
@@ -199,10 +216,12 @@ const MOCK_MARKERS: MarkerData[] = [
       { name: 'Fatima Khan', role: 'Volunteer' },
     ],
     position: { x: 55, y: 35 },
+    city: 'kolkata',
+    coords: [22.5726, 88.3639],
   },
   {
     id: '8',
-    title: 'Digital Literacy Program - Village H',
+    title: 'Digital Literacy Program - Salt Lake',
     category: 'education',
     severity: 'low',
     peopleAffected: 150,
@@ -213,6 +232,8 @@ const MOCK_MARKERS: MarkerData[] = [
       { name: 'Arun Bhat', role: 'Teacher' },
     ],
     position: { x: 80, y: 65 },
+    city: 'kolkata',
+    coords: [22.5958, 88.4114],
   },
   // Noida Issues
   {
@@ -229,6 +250,8 @@ const MOCK_MARKERS: MarkerData[] = [
       { name: 'Sonia Kapoor', role: 'Community Outreach' },
     ],
     position: { x: 45, y: 35 },
+    city: 'noida',
+    coords: [28.6273, 77.3649],
   },
   {
     id: '10',
@@ -243,6 +266,8 @@ const MOCK_MARKERS: MarkerData[] = [
       { name: 'Priyanka Das', role: 'Volunteer Lead' },
     ],
     position: { x: 55, y: 45 },
+    city: 'noida',
+    coords: [28.5706, 77.3219],
   },
   {
     id: '11',
@@ -258,6 +283,8 @@ const MOCK_MARKERS: MarkerData[] = [
       { name: 'Pooja Singh', role: 'Medical Support' },
     ],
     position: { x: 65, y: 55 },
+    city: 'noida',
+    coords: [28.5698, 77.3919],
   },
   {
     id: '12',
@@ -272,6 +299,8 @@ const MOCK_MARKERS: MarkerData[] = [
       { name: 'Sneha Rao', role: 'IT Trainer' },
     ],
     position: { x: 40, y: 70 },
+    city: 'noida',
+    coords: [28.4744, 77.5040],
   },
 ]
 
