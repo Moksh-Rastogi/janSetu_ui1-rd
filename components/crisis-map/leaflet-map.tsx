@@ -10,6 +10,7 @@ interface LeafletMapProps {
   selectedMarkerId: string | null
   onMarkerClick: (markerId: string) => void
   selectedCity: string
+  targetLocation?: [number, number] | null
 }
 
 // City coordinates and their regions
@@ -85,7 +86,7 @@ const categoryColors: Record<string, string> = {
   education: '#3b82f6',
 }
 
-export function LeafletMap({ markers, selectedMarkerId, onMarkerClick, selectedCity }: LeafletMapProps) {
+export function LeafletMap({ markers, selectedMarkerId, onMarkerClick, selectedCity, targetLocation }: LeafletMapProps) {
   const mapRef = useRef<L.Map | null>(null)
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const markersLayerRef = useRef<L.LayerGroup | null>(null)
@@ -159,6 +160,12 @@ export function LeafletMap({ markers, selectedMarkerId, onMarkerClick, selectedC
       })
     }
   }, [selectedCity, isMapReady])
+
+  // Handle target location from search
+  useEffect(() => {
+    if (!mapRef.current || !isMapReady || !targetLocation) return
+    mapRef.current.setView(targetLocation, 14, { animate: true })
+  }, [targetLocation, isMapReady])
 
   // Update markers
   useEffect(() => {
