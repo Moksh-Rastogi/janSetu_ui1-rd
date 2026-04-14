@@ -3,11 +3,11 @@ import { Navbar } from './navbar'
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen">
-      <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <Navbar />
-        <main className="flex-1 mt-16 p-4 sm:p-6 lg:p-8 bg-muted/30">
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
+      <div className="flex flex-1 overflow-hidden">
+        <Sidebar />
+        <main className="flex-1 overflow-auto mt-16 lg:mt-0 p-4 sm:p-6 lg:p-8 bg-muted/30 lg:ml-64">
           {children}
         </main>
       </div>

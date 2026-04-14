@@ -30,8 +30,8 @@ export function Navbar() {
   const currentRole = ROLES.find((r) => r.value === role)
 
   return (
-    <header className="fixed right-0 top-0 left-0 z-30 border-b border-border bg-background/95 backdrop-blur-sm lg:left-64 lg:right-0">
-      <div className="flex h-16 items-center justify-between gap-4 px-4 sm:px-6">
+    <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-border bg-background/95 backdrop-blur-sm">
+      <div className="flex h-full items-center justify-between gap-4 px-4 sm:px-6 lg:pl-64">
         {/* Left: Search */}
         <div className="flex-1 max-w-md">
           <div className="relative">
