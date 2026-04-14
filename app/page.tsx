@@ -96,7 +96,8 @@ export default function DashboardPage() {
 
   return (
     <AppLayout>
-      <div className="space-y-6 max-w-7xl mx-auto">
+      <div className="p-4 sm:p-6 lg:p-8">
+        <div className="space-y-6 max-w-7xl mx-auto">
         {/* Page Header */}
         <div>
           <h1 className="text-3xl font-bold text-foreground text-pretty">Dashboard</h1>
@@ -158,6 +159,7 @@ export default function DashboardPage() {
 
         {/* Activity Feed - Full width */}
         <ActivityFeed activities={MOCK_ACTIVITIES} />
+        </div>
       </div>
     </AppLayout>
   )

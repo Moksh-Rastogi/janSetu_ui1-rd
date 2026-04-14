@@ -93,7 +93,7 @@ export function Sidebar() {
       <Button
         variant="ghost"
         size="icon"
-        className="fixed left-4 top-4 z-50 lg:hidden"
+        className="fixed left-4 top-5 z-50 lg:hidden"
         onClick={() => setIsOpen(!isOpen)}
       >
         <Menu className="h-5 w-5" />
@@ -110,8 +110,8 @@ export function Sidebar() {
       {/* Sidebar */}
       <aside
         className={cn(
-          'fixed left-0 top-16 z-40 flex h-[calc(100vh-64px)] w-64 flex-col border-r border-border bg-background transition-all duration-300 lg:static lg:top-0 lg:h-screen lg:translate-x-0',
-          isOpen ? 'translate-x-0' : '-translate-x-full'
+          'fixed left-0 top-16 z-40 flex h-[calc(100vh-64px)] w-64 flex-col border-r border-border bg-background transition-all duration-300 lg:sticky lg:top-16 lg:h-[calc(100vh-64px)]',
+          isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
       >
         {/* Logo */}
@@ -157,9 +157,6 @@ export function Sidebar() {
           </p>
         </div>
       </aside>
-
-      {/* Spacer for desktop */}
-      <div className="hidden lg:block w-64 flex-shrink-0" />
     </>
   )
 }
