@@ -37,6 +37,7 @@ interface MapControlsProps {
 
 const CITIES = [
   { value: 'delhi', label: 'Delhi' },
+  { value: 'noida', label: 'Noida' },
   { value: 'mumbai', label: 'Mumbai' },
   { value: 'bangalore', label: 'Bangalore' },
   { value: 'chennai', label: 'Chennai' },

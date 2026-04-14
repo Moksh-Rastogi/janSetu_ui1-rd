@@ -77,6 +77,20 @@ const CITY_DATA: Record<string, { center: [number, number]; zoom: number; region
       { name: 'New Town', coords: [22.5958, 88.4614] },
     ],
   },
+  noida: {
+    center: [28.5355, 77.391],
+    zoom: 12,
+    regions: [
+      { name: 'Sector 18', coords: [28.5706, 77.3219] },
+      { name: 'Sector 62', coords: [28.6273, 77.3649] },
+      { name: 'Sector 15', coords: [28.5858, 77.3101] },
+      { name: 'Sector 44', coords: [28.5494, 77.3370] },
+      { name: 'Sector 76', coords: [28.5698, 77.3919] },
+      { name: 'Greater Noida', coords: [28.4744, 77.5040] },
+      { name: 'Noida Extension', coords: [28.5852, 77.4292] },
+      { name: 'Sector 137', coords: [28.5120, 77.3926] },
+    ],
+  },
 }
 
 const categoryColors: Record<string, string> = {
