@@ -80,16 +80,16 @@ export function AssignVolunteerModal({ isOpen, onClose, onAssign, issueTitle }: 
       />
       
       {/* Modal */}
-      <div className="relative w-full max-w-lg mx-4 bg-slate-900 border border-white/10 rounded-xl shadow-2xl overflow-hidden">
+      <div className="relative w-full max-w-md mx-4 bg-slate-900 border border-white/10 rounded-xl shadow-2xl overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-white/10">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/20">
-              <UserPlus className="h-5 w-5 text-primary" />
+        <div className="flex items-center justify-between p-3 border-b border-white/10">
+          <div className="flex items-center gap-2">
+            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/20">
+              <UserPlus className="h-4 w-4 text-primary" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-white">Assign Volunteer</h3>
-              <p className="text-sm text-white/60 truncate max-w-[250px]">{issueTitle}</p>
+              <h3 className="text-base font-semibold text-white">Assign Volunteer</h3>
+              <p className="text-xs text-white/60 truncate max-w-[200px]">{issueTitle}</p>
             </div>
           </div>
           <Button
@@ -103,27 +103,27 @@ export function AssignVolunteerModal({ isOpen, onClose, onAssign, issueTitle }: 
         </div>
 
         {/* Mode Toggle */}
-        <div className="flex p-4 gap-2 border-b border-white/10">
+        <div className="flex p-3 gap-2 border-b border-white/10">
           <Button
-            variant={assignMode === 'select' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setAssignMode('select')}
             className={cn(
+              'flex-1 transition-all',
               assignMode === 'select' 
-                ? 'bg-primary hover:bg-primary/90' 
-                : 'border-white/20 text-white hover:bg-white/10'
+                ? 'bg-primary text-primary-foreground hover:bg-primary/90' 
+                : 'bg-transparent border border-white/30 text-white hover:bg-white/10'
             )}
           >
             Select from List
           </Button>
           <Button
-            variant={assignMode === 'manual' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setAssignMode('manual')}
             className={cn(
+              'flex-1 transition-all',
               assignMode === 'manual' 
-                ? 'bg-primary hover:bg-primary/90' 
-                : 'border-white/20 text-white hover:bg-white/10'
+                ? 'bg-primary text-primary-foreground hover:bg-primary/90' 
+                : 'bg-transparent border border-white/30 text-white hover:bg-white/10'
             )}
           >
             Manual Entry
@@ -131,7 +131,7 @@ export function AssignVolunteerModal({ isOpen, onClose, onAssign, issueTitle }: 
         </div>
 
         {/* Content */}
-        <div className="p-4 max-h-[400px] overflow-y-auto">
+        <div className="p-3 max-h-[280px] overflow-y-auto">
           {assignMode === 'select' ? (
             <>
               {/* Search */}
@@ -227,21 +227,22 @@ export function AssignVolunteerModal({ isOpen, onClose, onAssign, issueTitle }: 
         </div>
 
         {/* Footer */}
-        <div className="flex justify-end gap-3 p-4 border-t border-white/10">
+        <div className="flex justify-end gap-2 p-3 border-t border-white/10">
           <Button
-            variant="outline"
+            size="sm"
             onClick={onClose}
-            className="border-white/20 text-white hover:bg-white/10"
+            className="bg-transparent border border-white/30 text-white hover:bg-white/10"
           >
             Cancel
           </Button>
           <Button
+            size="sm"
             onClick={handleAssign}
             disabled={!canAssign}
-            className="bg-primary hover:bg-primary/90 gap-2"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 gap-2"
           >
             <UserPlus className="h-4 w-4" />
-            Assign Volunteer
+            Assign
           </Button>
         </div>
       </div>
