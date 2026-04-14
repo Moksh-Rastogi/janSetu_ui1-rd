@@ -1,11 +1,22 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
+import dynamic from 'next/dynamic'
 import { MapControls } from './map-controls'
-import { MapMarker, type MarkerData } from './map-marker'
+import { type MarkerData } from './map-marker'
 import { RightPanel } from './right-panel'
 import { FilterPanel, type FilterState } from './filter-panel'
 import { AIInsightCard } from './ai-insight-card'
+
+// Dynamically import LeafletMap to avoid SSR issues
+const LeafletMap = dynamic(() => import('./leaflet-map').then((mod) => mod.LeafletMap), {
+  ssr: false,
+  loading: () => (
+    <div className="absolute inset-0 bg-slate-900 flex items-center justify-center">
+      <div className="text-white/60">Loading map...</div>
+    </div>
+  ),
+})
 
 // Mock data for markers
 const MOCK_MARKERS: MarkerData[] = [
@@ -130,6 +141,7 @@ export function MapView() {
   const [isLive, setIsLive] = useState(true)
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [selectedMarkerId, setSelectedMarkerId] = useState<string | null>(null)
+  const [selectedCity, setSelectedCity] = useState('delhi')
   const [filters, setFilters] = useState<FilterState>({
     urgency: [],
     category: [],
@@ -168,9 +180,9 @@ export function MapView() {
     ? MOCK_MARKERS.find((m) => m.id === selectedMarkerId) || null
     : null
 
-  const handleMarkerClick = (markerId: string) => {
-    setSelectedMarkerId(markerId === selectedMarkerId ? null : markerId)
-  }
+  const handleMarkerClick = useCallback((markerId: string) => {
+    setSelectedMarkerId((prev) => (markerId === prev ? null : markerId))
+  }, [])
 
   const handleLocationClick = () => {
     // Simulated location centering
@@ -179,62 +191,13 @@ export function MapView() {
 
   return (
     <div className="relative w-full h-full min-h-[calc(100vh-4rem)] rounded-xl overflow-hidden shadow-2xl">
-      {/* Dark Map Placeholder */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-        {/* Simulated map grid */}
-        <div
-          className="absolute inset-0 opacity-20"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)
-            `,
-            backgroundSize: '50px 50px',
-          }}
-        />
-
-        {/* Simulated map features */}
-        <svg className="absolute inset-0 w-full h-full opacity-30" preserveAspectRatio="none">
-          {/* Rivers */}
-          <path
-            d="M0,200 Q100,180 200,220 T400,200 T600,240 T800,220 T1000,200"
-            stroke="rgba(59,130,246,0.5)"
-            strokeWidth="3"
-            fill="none"
-          />
-          <path
-            d="M200,0 Q180,100 220,200 T200,400 T240,600"
-            stroke="rgba(59,130,246,0.4)"
-            strokeWidth="2"
-            fill="none"
-          />
-
-          {/* Roads */}
-          <path
-            d="M0,300 L1000,300"
-            stroke="rgba(255,255,255,0.2)"
-            strokeWidth="2"
-            strokeDasharray="10,5"
-          />
-          <path
-            d="M500,0 L500,600"
-            stroke="rgba(255,255,255,0.2)"
-            strokeWidth="2"
-            strokeDasharray="10,5"
-          />
-        </svg>
-
-        {/* Map region labels */}
-        <div className="absolute top-[20%] left-[15%] text-white/20 text-sm font-medium">
-          Northern Region
-        </div>
-        <div className="absolute top-[60%] left-[60%] text-white/20 text-sm font-medium">
-          Southern Region
-        </div>
-        <div className="absolute top-[40%] right-[10%] text-white/20 text-sm font-medium">
-          Coastal Zone
-        </div>
-      </div>
+      {/* Leaflet Map */}
+      <LeafletMap
+        markers={filteredMarkers}
+        selectedMarkerId={selectedMarkerId}
+        onMarkerClick={handleMarkerClick}
+        selectedCity={selectedCity}
+      />
 
       {/* Map Controls */}
       <MapControls
@@ -244,17 +207,9 @@ export function MapView() {
         onToggleLive={() => setIsLive(!isLive)}
         onFilterClick={() => setIsFilterOpen(!isFilterOpen)}
         onLocationClick={handleLocationClick}
+        selectedCity={selectedCity}
+        onCityChange={setSelectedCity}
       />
-
-      {/* Map Markers */}
-      {filteredMarkers.map((marker) => (
-        <MapMarker
-          key={marker.id}
-          marker={marker}
-          isSelected={marker.id === selectedMarkerId}
-          onClick={() => handleMarkerClick(marker.id)}
-        />
-      ))}
 
       {/* Filter Panel */}
       <FilterPanel
