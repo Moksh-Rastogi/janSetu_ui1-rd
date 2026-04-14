@@ -274,6 +274,9 @@ export function MapView() {
 
   // Filter markers based on search and filters
   const filteredMarkers = useMemo(() => {
+    // If not live, return empty array - no markers shown
+    if (!isLive) return []
+
     return MOCK_MARKERS.filter((marker) => {
       // Search category filter (from selecting an issue in search)
       if (searchFilteredCategory) {
@@ -296,7 +299,7 @@ export function MapView() {
 
       return true
     })
-  }, [searchFilteredCategory, filters])
+  }, [isLive, searchFilteredCategory, filters])
 
   const selectedMarker = selectedMarkerId
     ? MOCK_MARKERS.find((m) => m.id === selectedMarkerId) || null

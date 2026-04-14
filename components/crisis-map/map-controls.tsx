@@ -199,12 +199,14 @@ export function MapControls({
           variant="outline"
           onClick={onToggleLive}
           className={cn(
-            'gap-2 px-3 bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20 hover:text-white',
+            'h-9 px-3 bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20 hover:text-white',
             isLive && 'bg-red-500/20 border-red-400/40 text-red-300 hover:bg-red-500/30 hover:text-red-200'
           )}
         >
-          <Radio className={cn('h-4 w-4', isLive && 'animate-pulse')} />
-          <span className="text-sm">{isLive ? 'Live' : 'Paused'}</span>
+          <span className="flex items-center gap-2">
+            <Radio className={cn('h-4 w-4 shrink-0', isLive && 'animate-pulse')} />
+            <span className="text-sm leading-none">{isLive ? 'Live' : 'Paused'}</span>
+          </span>
         </Button>
       </div>
     </div>
