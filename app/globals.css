@@ -125,16 +125,6 @@
 }
 
 @layer utilities {
-  /* Smooth transitions for interactive elements */
-  .transition-smooth {
-    @apply transition-all duration-300 ease-in-out;
-  }
-  
-  /* Card hover effect */
-  .card-hover {
-    @apply hover:shadow-md hover:-translate-y-0.5 transition-smooth;
-  }
-  
   /* Text balance for better typography */
   .text-pretty {
     text-wrap: pretty;
