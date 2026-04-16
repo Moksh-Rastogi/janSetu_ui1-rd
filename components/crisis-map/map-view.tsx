@@ -374,11 +374,14 @@ export function MapView() {
     return searchSuggestions.length === 0
   }, [searchQuery, searchSuggestions])
 
-  // Filter markers based on search and filters
+  // Filter markers based on search, filters, and live status
+  // When LIVE: show ALL cities' issues (regardless of selected city/zoom)
+  // When PAUSED: show no issues
   const filteredMarkers = useMemo(() => {
     // If not live, return empty array - no markers shown
     if (!isLive) return []
 
+    // When LIVE, show ALL markers from ALL cities
     return MOCK_MARKERS.filter((marker) => {
       // Search category filter (from selecting an issue in search)
       if (searchFilteredCategory) {

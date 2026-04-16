@@ -181,21 +181,18 @@ export function LeafletMap({ markers, selectedMarkerId, onMarkerClick, selectedC
     mapRef.current.setView(targetLocation, 14, { animate: true })
   }, [targetLocation, isMapReady])
 
-  // Update markers
+  // Update markers - use actual coordinates from marker data
   useEffect(() => {
     if (!mapRef.current || !markersLayerRef.current || !isMapReady) return
 
-    const cityData = CITY_DATA[selectedCity] || CITY_DATA.delhi
     markersLayerRef.current.clearLayers()
 
-    markers.forEach((marker, index) => {
-      // Distribute markers across city regions
-      const regionIndex = index % cityData.regions.length
-      const region = cityData.regions[regionIndex]
+    markers.forEach((marker) => {
+      // Use the marker's actual coordinates if available
+      const markerWithCoords = marker as MarkerData & { coords?: [number, number] }
+      if (!markerWithCoords.coords) return
       
-      // Add some randomness to marker position within region
-      const lat = region.coords[0] + (Math.random() - 0.5) * 0.03
-      const lng = region.coords[1] + (Math.random() - 0.5) * 0.03
+      const [lat, lng] = markerWithCoords.coords
 
       const color = categoryColors[marker.category] || '#888888'
       const isSelected = marker.id === selectedMarkerId
@@ -229,7 +226,7 @@ export function LeafletMap({ markers, selectedMarkerId, onMarkerClick, selectedC
       
       markersLayerRef.current?.addLayer(leafletMarker)
     })
-  }, [markers, selectedMarkerId, selectedCity, onMarkerClick, isMapReady])
+  }, [markers, selectedMarkerId, onMarkerClick, isMapReady])
 
   return (
     <>

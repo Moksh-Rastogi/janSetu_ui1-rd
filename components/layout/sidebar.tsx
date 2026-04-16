@@ -15,11 +15,8 @@ import {
   MessageSquare,
   Settings,
   ChevronDown,
-  Menu,
 } from 'lucide-react'
-import { useState } from 'react'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
 
 const MENU_ITEMS = [
   {
@@ -79,9 +76,13 @@ const MENU_ITEMS = [
   },
 ]
 
-export function Sidebar() {
+interface SidebarProps {
+  isOpen: boolean
+  onClose: () => void
+}
+
+export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname()
-  const [isOpen, setIsOpen] = useState(false)
 
   const isActive = (href: string) => {
     return pathname === href || pathname.startsWith(href + '/')
@@ -89,21 +90,11 @@ export function Sidebar() {
 
   return (
     <>
-      {/* Mobile Menu Button */}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="fixed left-4 top-5 z-50 lg:hidden"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <Menu className="h-5 w-5" />
-      </Button>
-
       {/* Mobile Overlay */}
       {isOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/50 lg:hidden"
-          onClick={() => setIsOpen(false)}
+          onClick={onClose}
         />
       )}
 
@@ -130,7 +121,7 @@ export function Sidebar() {
                       ? 'bg-primary text-primary-foreground shadow-sm'
                       : 'text-foreground hover:bg-muted'
                   )}
-                  onClick={() => setIsOpen(false)}
+                  onClick={onClose}
                 >
                   <Icon className="h-5 w-5 flex-shrink-0" />
                   <span>{item.label}</span>

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Search, Bell, ChevronDown, LogOut, User } from 'lucide-react'
+import { Search, Bell, ChevronDown, LogOut, User, Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -22,7 +22,11 @@ const ROLES: { value: UserRole; label: string; color: string }[] = [
   { value: 'donor', label: 'Donor', color: 'bg-accent' },
 ]
 
-export function Navbar() {
+interface NavbarProps {
+  onMenuClick?: () => void
+}
+
+export function Navbar({ onMenuClick }: NavbarProps) {
   const [role, setRole] = useState<UserRole>('admin')
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -32,8 +36,17 @@ export function Navbar() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-border bg-background/95 backdrop-blur-sm">
       <div className="flex h-full items-center px-4 sm:px-6 lg:px-8">
-        {/* Left: Logo */}
+        {/* Left: Menu Button + Logo */}
         <div className="flex items-center gap-2 flex-shrink-0">
+          {/* Mobile Menu Button - beside JanSetu logo */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="lg:hidden"
+            onClick={onMenuClick}
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold shadow-md">
             J
           </div>
