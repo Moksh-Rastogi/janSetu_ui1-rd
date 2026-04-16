@@ -88,7 +88,12 @@ export function TaskKanbanBoard({ tasks, onTaskMove, onAssignVolunteer, onUnassi
   }
 
   const getTasksByStatus = (status: Task['status']) => {
-    return tasks.filter(task => task.status === status)
+    const filteredTasks = tasks.filter(task => task.status === status)
+    // Limit completed tasks to show only the past 10
+    if (status === 'completed') {
+      return filteredTasks.slice(0, 10)
+    }
+    return filteredTasks
   }
 
   return (
@@ -310,17 +315,19 @@ function TaskCard({ task, isDragging, onDragStart, onAssignVolunteer, onUnassign
                             </div>
                             <span className="text-sm font-medium">{volunteer.name}</span>
                           </div>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6 text-red-500 hover:text-red-600 hover:bg-red-50"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              onUnassignVolunteer(task.id, volunteer.id)
-                            }}
-                          >
-                            <X className="h-3.5 w-3.5" />
-                          </Button>
+                          {task.status !== 'completed' && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-6 w-6 text-red-500 hover:text-red-600 hover:bg-red-50"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                onUnassignVolunteer(task.id, volunteer.id)
+                              }}
+                            >
+                              <X className="h-3.5 w-3.5" />
+                            </Button>
+                          )}
                         </div>
                       ))}
                     </div>
