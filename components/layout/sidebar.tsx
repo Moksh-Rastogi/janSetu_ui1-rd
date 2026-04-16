@@ -14,7 +14,6 @@ import {
   BarChart3,
   MessageSquare,
   Settings,
-  ChevronDown,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -90,7 +89,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
   return (
     <>
-      {/* Mobile Overlay */}
+      {/* Mobile Overlay - Only visible on mobile when sidebar is open */}
       {isOpen && (
         <div
           className="fixed inset-0 z-30 bg-black/50 md:hidden"
@@ -98,15 +97,17 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         />
       )}
 
-      {/* Sidebar - Push Layout (not overlay) */}
+      {/* Sidebar - Width-based push layout on desktop, overlay on mobile */}
       <aside
         className={cn(
-          'flex h-[calc(100vh-64px)] flex-col border-r border-border bg-background transition-all duration-300 ease-in-out overflow-hidden',
-          // Desktop: always visible, width-based push layout
-          'md:relative md:w-64 md:translate-x-0',
-          // Mobile: fixed overlay when open, hidden when closed
-          'fixed left-0 top-16 z-40 w-64',
-          isOpen ? 'translate-x-0' : '-translate-x-full'
+          'flex flex-col border-r border-border bg-background transition-all duration-300 ease-in-out overflow-hidden',
+          'h-[calc(100vh-64px)]',
+          // Desktop: relative positioning for width-based push layout
+          'md:relative',
+          // Mobile: fixed overlay
+          'fixed left-0 top-16 z-40',
+          // Dynamic width based on open state
+          isOpen ? 'w-64 md:w-64' : 'w-0 md:w-64'
         )}
       >
         {/* Navigation */}
@@ -128,7 +129,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                   onClick={onClose}
                 >
                   <Icon className="h-5 w-5 flex-shrink-0" />
-                  <span>{item.label}</span>
+                  <span className="md:block hidden">{item.label}</span>
                 </Link>
               )
             })}
@@ -137,7 +138,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
         {/* Footer */}
         <div className="border-t border-border px-4 py-4">
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-muted-foreground hidden md:block">
             JanSetu v1.0 | Smart NGO Ecosystem
           </p>
         </div>
