@@ -158,7 +158,7 @@ export default function TasksPage() {
     const task: Task = {
       ...newTask,
       id: `task-${Date.now()}`,
-      aiAssigned: false,
+      aiAssigned: true,
     }
     setTasks([task, ...tasks])
     setShowNewTaskModal(false)

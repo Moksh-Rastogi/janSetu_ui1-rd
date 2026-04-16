@@ -4,14 +4,17 @@ import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import { 
   MapPin, 
   Calendar, 
   UserPlus, 
   Sparkles,
   GripVertical,
-  ChevronRight
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { Task } from '@/app/tasks/page'
@@ -149,7 +152,7 @@ function TaskCard({ task, isDragging, onDragStart, onAssignVolunteer }: TaskCard
                 {priority.label}
               </Badge>
               {task.aiAssigned && (
-                <Badge variant="secondary" className="text-xs gap-1">
+                <Badge className="text-xs gap-1 bg-green-600 hover:bg-green-600 text-white">
                   <Sparkles className="h-3 w-3" />
                   AI
                 </Badge>
@@ -185,12 +188,33 @@ function TaskCard({ task, isDragging, onDragStart, onAssignVolunteer }: TaskCard
         <div className="flex items-center justify-between pt-2 border-t border-border">
           <div className="flex items-center gap-1">
             {task.assignedVolunteers.length > 0 ? (
-              <span className="text-xs text-red-600 font-medium uppercase">
-                {task.assignedVolunteers[0].name.split(' ')[0]}
-                {task.assignedVolunteers.length > 1 && (
-                  <span className="text-muted-foreground">, {task.assignedVolunteers[1].name.split(' ')[0].charAt(0)}{task.assignedVolunteers[1].name.split(' ')[1]?.charAt(0) || ''} +{task.assignedVolunteers.length - 1}</span>
-                )}
-              </span>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className="text-xs font-medium cursor-pointer hover:opacity-80 transition-opacity text-left">
+                    <span className="text-red-600 uppercase">
+                      {task.assignedVolunteers[0].name.split(' ')[0]}
+                    </span>
+                    {task.assignedVolunteers.length > 1 && (
+                      <span className="text-muted-foreground">
+                        , {task.assignedVolunteers[1].name.split(' ').map(n => n[0]).join('')} +{task.assignedVolunteers.length - 1}
+                      </span>
+                    )}
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-48 p-2" align="start">
+                  <div className="space-y-1">
+                    <p className="text-xs font-medium text-muted-foreground mb-2">Assigned Volunteers</p>
+                    {task.assignedVolunteers.map((volunteer) => (
+                      <div key={volunteer.id} className="flex items-center gap-2 py-1">
+                        <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-medium text-primary">
+                          {volunteer.name.split(' ').map(n => n[0]).join('')}
+                        </div>
+                        <span className="text-sm">{volunteer.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
             ) : (
               <span className="text-xs text-muted-foreground">Unassigned</span>
             )}
