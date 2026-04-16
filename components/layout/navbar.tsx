@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { Search, Bell, ChevronDown, LogOut, User, Menu } from 'lucide-react'
+import { useState, useMemo } from 'react'
+import { Search, Bell, ChevronDown, LogOut, User, Menu, MapPin, Building2, Users, ClipboardList, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -13,6 +13,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
+import { searchAll, getTypeLabel, getTypeColor, type SearchItem } from '@/lib/search-data'
+import Link from 'next/link'
 
 type UserRole = 'admin' | 'volunteer' | 'donor'
 
@@ -27,12 +29,44 @@ interface NavbarProps {
   sidebarOpen?: boolean
 }
 
+// Get icon for search result type
+function getTypeIcon(type: SearchItem['type']) {
+  switch (type) {
+    case 'campaign': return MapPin
+    case 'task': return ClipboardList
+    case 'ngo': return Building2
+    case 'volunteer': return Users
+    default: return Search
+  }
+}
+
+// Get link for search result
+function getResultLink(item: SearchItem): string {
+  switch (item.type) {
+    case 'campaign': return '/crisis-map'
+    case 'task': return '/tasks'
+    case 'ngo': return '/crisis-map'
+    case 'volunteer': return `/volunteers/${item.id}`
+    default: return '/'
+  }
+}
+
 export function Navbar({ onMenuClick, sidebarOpen }: NavbarProps) {
   const [role, setRole] = useState<UserRole>('admin')
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
 
   const currentRole = ROLES.find((r) => r.value === role)
+
+  // Search results
+  const searchResults = useMemo(() => {
+    return searchAll(searchQuery)
+  }, [searchQuery])
+
+  const handleClearSearch = () => {
+    setSearchQuery('')
+    setSearchOpen(false)
+  }
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-border bg-background/95 backdrop-blur-sm">
@@ -59,21 +93,85 @@ export function Navbar({ onMenuClick, sidebarOpen }: NavbarProps) {
             <div className="relative">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
-                placeholder="Search campaigns, volunteers..."
-                className="pl-10 bg-muted border-0 focus-visible:ring-1"
+                placeholder="Search campaigns, tasks, NGOs, volunteers..."
+                className="pl-10 pr-8 bg-muted border-0 focus-visible:ring-1"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => setSearchOpen(true)}
-                onBlur={() => setTimeout(() => setSearchOpen(false), 200)}
+                onBlur={() => setTimeout(() => setSearchOpen(false), 300)}
               />
+              {searchQuery && (
+                <button
+                  onClick={handleClearSearch}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
               {searchOpen && searchQuery && (
-                <div className="absolute top-12 left-0 right-0 bg-card border border-border rounded-lg shadow-lg z-50 p-2">
-                  <div className="text-xs text-muted-foreground p-2">
-                    Search results for "{searchQuery}"
+                <div className="absolute top-12 left-0 right-0 bg-card border border-border rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
+                  <div className="p-2 border-b border-border">
+                    <span className="text-xs text-muted-foreground">
+                      {searchResults.length > 0 
+                        ? `Found ${searchResults.length} result${searchResults.length > 1 ? 's' : ''} for "${searchQuery}"`
+                        : `No results found for "${searchQuery}"`
+                      }
+                    </span>
                   </div>
-                  <div className="text-xs text-muted-foreground p-2">
-                    (AI search feature coming soon)
-                  </div>
+                  {searchResults.length > 0 ? (
+                    <div className="py-1">
+                      {searchResults.slice(0, 10).map((item) => {
+                        const Icon = getTypeIcon(item.type)
+                        return (
+                          <Link
+                            key={`${item.type}-${item.id}`}
+                            href={getResultLink(item)}
+                            onClick={() => {
+                              setSearchOpen(false)
+                              setSearchQuery('')
+                            }}
+                            className="flex items-start gap-3 px-3 py-2.5 hover:bg-muted transition-colors cursor-pointer"
+                          >
+                            <div className={cn('mt-0.5 p-1.5 rounded-md', getTypeColor(item.type))}>
+                              <Icon className="h-3.5 w-3.5 text-white" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2">
+                                <span className="font-medium text-sm text-foreground truncate">
+                                  {item.title}
+                                </span>
+                                <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground uppercase font-medium">
+                                  {getTypeLabel(item.type)}
+                                </span>
+                              </div>
+                              <p className="text-xs text-muted-foreground truncate mt-0.5">
+                                {item.description}
+                              </p>
+                              {item.location && (
+                                <div className="flex items-center gap-1 mt-1 text-xs text-muted-foreground">
+                                  <MapPin className="h-3 w-3" />
+                                  <span>{item.location}</span>
+                                </div>
+                              )}
+                            </div>
+                          </Link>
+                        )
+                      })}
+                      {searchResults.length > 10 && (
+                        <div className="px-3 py-2 text-xs text-muted-foreground text-center border-t border-border">
+                          Showing 10 of {searchResults.length} results
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="p-6 text-center">
+                      <Search className="h-8 w-8 text-muted-foreground mx-auto mb-2 opacity-50" />
+                      <p className="text-sm text-muted-foreground">No matching results</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Try searching for campaigns, tasks, NGOs, or volunteers
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
