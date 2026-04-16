@@ -1,6 +1,5 @@
 'use client'
 
-import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { X } from 'lucide-react'
@@ -57,69 +56,67 @@ export function TaskFilters({ filters, onFiltersChange, onClose }: TaskFiltersPr
   const hasActiveFilters = filters.priority !== '' || filters.category.length > 0
 
   return (
-    <Card className="mb-4">
-      <CardContent className="p-4">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="font-medium text-foreground">Filters</h3>
-          <div className="flex items-center gap-2">
-            {hasActiveFilters && (
-              <Button variant="ghost" size="sm" onClick={clearFilters}>
-                Clear all
-              </Button>
-            )}
-            <Button variant="ghost" size="icon" onClick={onClose}>
-              <X className="h-4 w-4" />
+    <div className="mb-4 bg-muted/50 p-4 rounded-none">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="font-medium text-foreground">Filters</h3>
+        <div className="flex items-center gap-2">
+          {hasActiveFilters && (
+            <Button variant="ghost" size="sm" onClick={clearFilters}>
+              Clear all
             </Button>
+          )}
+          <Button variant="ghost" size="icon" onClick={onClose}>
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        {/* Priority Filter */}
+        <div>
+          <label className="text-sm font-medium text-muted-foreground mb-2 block">
+            Priority
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {PRIORITIES.map(p => (
+              <Badge
+                key={p.value}
+                variant={filters.priority === p.value ? 'default' : 'outline'}
+                className={cn(
+                  'cursor-pointer transition-colors border-0',
+                  filters.priority === p.value && 'bg-primary'
+                )}
+                onClick={() => togglePriority(p.value)}
+              >
+                <span className={cn('w-2 h-2 rounded-full mr-1.5', p.color)} />
+                {p.label}
+              </Badge>
+            ))}
           </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          {/* Priority Filter */}
-          <div>
-            <label className="text-sm font-medium text-muted-foreground mb-2 block">
-              Priority
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {PRIORITIES.map(p => (
-                <Badge
-                  key={p.value}
-                  variant={filters.priority === p.value ? 'default' : 'outline'}
-                  className={cn(
-                    'cursor-pointer transition-colors',
-                    filters.priority === p.value && 'bg-primary'
-                  )}
-                  onClick={() => togglePriority(p.value)}
-                >
-                  <span className={cn('w-2 h-2 rounded-full mr-1.5', p.color)} />
-                  {p.label}
-                </Badge>
-              ))}
-            </div>
-          </div>
-
-          {/* Category Filter */}
-          <div>
-            <label className="text-sm font-medium text-muted-foreground mb-2 block">
-              Category
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {CATEGORIES.map(category => (
-                <Badge
-                  key={category}
-                  variant={filters.category.includes(category) ? 'default' : 'outline'}
-                  className={cn(
-                    'cursor-pointer transition-colors',
-                    filters.category.includes(category) && 'bg-primary'
-                  )}
-                  onClick={() => toggleCategory(category)}
-                >
-                  {category}
-                </Badge>
-              ))}
-            </div>
+        {/* Category Filter */}
+        <div>
+          <label className="text-sm font-medium text-muted-foreground mb-2 block">
+            Category
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {CATEGORIES.map(category => (
+              <Badge
+                key={category}
+                variant={filters.category.includes(category) ? 'default' : 'outline'}
+                className={cn(
+                  'cursor-pointer transition-colors border-0',
+                  filters.category.includes(category) && 'bg-primary'
+                )}
+                onClick={() => toggleCategory(category)}
+              >
+                {category}
+              </Badge>
+            ))}
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }
