@@ -24,6 +24,11 @@ export interface Task {
   aiAssigned: boolean
   dueDate: string
   category: string
+  donators?: {
+    id: string
+    name: string
+    amount: number
+  }[]
 }
 
 const MOCK_TASKS: Task[] = [
@@ -95,6 +100,10 @@ const MOCK_TASKS: Task[] = [
     aiAssigned: true,
     dueDate: '2024-01-13',
     category: 'Shelter',
+    donators: [
+      { id: 'd1', name: 'Ravi Kapoor', amount: 5000 },
+      { id: 'd2', name: 'Sunita Devi', amount: 2500 },
+    ],
   },
   {
     id: '6',
@@ -107,6 +116,11 @@ const MOCK_TASKS: Task[] = [
     aiAssigned: false,
     dueDate: '2024-01-12',
     category: 'Relief',
+    donators: [
+      { id: 'd3', name: 'Amit Sharma', amount: 10000 },
+      { id: 'd4', name: 'Geeta Rani', amount: 3000 },
+      { id: 'd5', name: 'Vijay Kumar', amount: 7500 },
+    ],
   },
   {
     id: '7',
@@ -172,6 +186,20 @@ export default function TasksPage() {
     setShowNewTaskModal(false)
   }
 
+  const handleDonate = (taskId: string, donation: { name: string; amount: number }) => {
+    setTasks(tasks.map(task => 
+      task.id === taskId 
+        ? { 
+            ...task, 
+            donators: [
+              ...(task.donators || []), 
+              { id: `d-${Date.now()}`, ...donation }
+            ] 
+          }
+        : task
+    ))
+  }
+
   const filteredTasks = tasks.filter(task => {
     if (filters.priority && filters.priority !== task.priority) {
       return false
@@ -224,6 +252,8 @@ export default function TasksPage() {
             tasks={filteredTasks}
             onTaskMove={handleTaskMove}
             onAssignVolunteer={handleAssignVolunteer}
+            onUnassignVolunteer={handleUnassignVolunteer}
+            onDonate={handleDonate}
           />
         </div>
 
