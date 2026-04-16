@@ -102,8 +102,9 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       <aside
         className={cn(
           'flex h-[calc(100vh-64px)] w-64 flex-col border-r border-border bg-background transition-all duration-300',
-          'fixed left-0 top-16 z-40 lg:relative lg:translate-x-0',
-          isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+          'fixed left-0 top-16 z-40 lg:relative lg:z-auto',
+          isOpen ? 'translate-x-0' : '-translate-x-full',
+          'lg:translate-x-0'
         )}
       >
         {/* Navigation */}
