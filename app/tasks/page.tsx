@@ -5,6 +5,7 @@ import { AppLayout } from '@/components/layout/app-layout'
 import { TaskKanbanBoard } from '@/components/tasks/kanban-board'
 import { TaskFilters } from '@/components/tasks/task-filters'
 import { AssignVolunteerModal } from '@/components/tasks/assign-volunteer-modal'
+import { NewTaskModal } from '@/components/tasks/new-task-modal'
 import { Button } from '@/components/ui/button'
 import { Plus, Filter } from 'lucide-react'
 
@@ -127,10 +128,11 @@ export default function TasksPage() {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [showAssignModal, setShowAssignModal] = useState(false)
   const [filters, setFilters] = useState({
-    priority: [] as string[],
+    priority: '' as string,
     category: [] as string[],
     assignee: '',
   })
+  const [showNewTaskModal, setShowNewTaskModal] = useState(false)
 
   const handleTaskMove = (taskId: string, newStatus: Task['status']) => {
     setTasks(tasks.map(task => 
@@ -152,8 +154,18 @@ export default function TasksPage() {
     setShowAssignModal(false)
   }
 
+  const handleAddNewTask = (newTask: Omit<Task, 'id' | 'aiAssigned'>) => {
+    const task: Task = {
+      ...newTask,
+      id: `task-${Date.now()}`,
+      aiAssigned: false,
+    }
+    setTasks([task, ...tasks])
+    setShowNewTaskModal(false)
+  }
+
   const filteredTasks = tasks.filter(task => {
-    if (filters.priority.length > 0 && !filters.priority.includes(task.priority)) {
+    if (filters.priority && filters.priority !== task.priority) {
       return false
     }
     if (filters.category.length > 0 && !filters.category.includes(task.category)) {
@@ -182,7 +194,7 @@ export default function TasksPage() {
               <Filter className="h-4 w-4" />
               Filters
             </Button>
-            <Button className="gap-2">
+            <Button className="gap-2" onClick={() => setShowNewTaskModal(true)}>
               <Plus className="h-4 w-4" />
               New Task
             </Button>
@@ -216,6 +228,13 @@ export default function TasksPage() {
             onAssign={handleVolunteerAssigned}
           />
         )}
+
+        {/* New Task Modal */}
+        <NewTaskModal
+          open={showNewTaskModal}
+          onOpenChange={setShowNewTaskModal}
+          onAddTask={handleAddNewTask}
+        />
       </div>
     </AppLayout>
   )

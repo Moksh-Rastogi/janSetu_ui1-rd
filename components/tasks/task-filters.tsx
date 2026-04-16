@@ -8,12 +8,12 @@ import { cn } from '@/lib/utils'
 
 interface TaskFiltersProps {
   filters: {
-    priority: string[]
+    priority: string
     category: string[]
     assignee: string
   }
   onFiltersChange: (filters: {
-    priority: string[]
+    priority: string
     category: string[]
     assignee: string
   }) => void
@@ -38,10 +38,9 @@ const CATEGORIES = [
 
 export function TaskFilters({ filters, onFiltersChange, onClose }: TaskFiltersProps) {
   const togglePriority = (priority: string) => {
-    const newPriorities = filters.priority.includes(priority)
-      ? filters.priority.filter(p => p !== priority)
-      : [...filters.priority, priority]
-    onFiltersChange({ ...filters, priority: newPriorities })
+    // Single select - toggle off if already selected, otherwise select the new one
+    const newPriority = filters.priority === priority ? '' : priority
+    onFiltersChange({ ...filters, priority: newPriority })
   }
 
   const toggleCategory = (category: string) => {
@@ -52,10 +51,10 @@ export function TaskFilters({ filters, onFiltersChange, onClose }: TaskFiltersPr
   }
 
   const clearFilters = () => {
-    onFiltersChange({ priority: [], category: [], assignee: '' })
+    onFiltersChange({ priority: '', category: [], assignee: '' })
   }
 
-  const hasActiveFilters = filters.priority.length > 0 || filters.category.length > 0
+  const hasActiveFilters = filters.priority !== '' || filters.category.length > 0
 
   return (
     <Card className="mb-4">
@@ -81,18 +80,18 @@ export function TaskFilters({ filters, onFiltersChange, onClose }: TaskFiltersPr
               Priority
             </label>
             <div className="flex flex-wrap gap-2">
-              {PRIORITIES.map(priority => (
+              {PRIORITIES.map(p => (
                 <Badge
-                  key={priority.value}
-                  variant={filters.priority.includes(priority.value) ? 'default' : 'outline'}
+                  key={p.value}
+                  variant={filters.priority === p.value ? 'default' : 'outline'}
                   className={cn(
                     'cursor-pointer transition-colors',
-                    filters.priority.includes(priority.value) && 'bg-primary'
+                    filters.priority === p.value && 'bg-primary'
                   )}
-                  onClick={() => togglePriority(priority.value)}
+                  onClick={() => togglePriority(p.value)}
                 >
-                  <span className={cn('w-2 h-2 rounded-full mr-1.5', priority.color)} />
-                  {priority.label}
+                  <span className={cn('w-2 h-2 rounded-full mr-1.5', p.color)} />
+                  {p.label}
                 </Badge>
               ))}
             </div>

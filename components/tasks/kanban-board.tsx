@@ -185,36 +185,30 @@ function TaskCard({ task, isDragging, onDragStart, onAssignVolunteer }: TaskCard
         <div className="flex items-center justify-between pt-2 border-t border-border">
           <div className="flex items-center gap-1">
             {task.assignedVolunteers.length > 0 ? (
-              <div className="flex -space-x-2">
-                {task.assignedVolunteers.slice(0, 3).map((volunteer) => (
-                  <Avatar key={volunteer.id} className="h-6 w-6 border-2 border-background">
-                    <AvatarFallback className="text-xs bg-primary/10 text-primary">
-                      {volunteer.name.split(' ').map(n => n[0]).join('')}
-                    </AvatarFallback>
-                  </Avatar>
-                ))}
-                {task.assignedVolunteers.length > 3 && (
-                  <div className="h-6 w-6 rounded-full bg-muted border-2 border-background flex items-center justify-center text-xs text-muted-foreground">
-                    +{task.assignedVolunteers.length - 3}
-                  </div>
+              <span className="text-xs text-red-600 font-medium uppercase">
+                {task.assignedVolunteers[0].name.split(' ')[0]}
+                {task.assignedVolunteers.length > 1 && (
+                  <span className="text-muted-foreground">, {task.assignedVolunteers[1].name.split(' ')[0].charAt(0)}{task.assignedVolunteers[1].name.split(' ')[1]?.charAt(0) || ''} +{task.assignedVolunteers.length - 1}</span>
                 )}
-              </div>
+              </span>
             ) : (
               <span className="text-xs text-muted-foreground">Unassigned</span>
             )}
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-7 px-2 text-xs"
-            onClick={(e) => {
-              e.stopPropagation()
-              onAssignVolunteer(task)
-            }}
-          >
-            <UserPlus className="h-3 w-3 mr-1" />
-            Assign
-          </Button>
+          {task.status !== 'completed' && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 px-2 text-xs"
+              onClick={(e) => {
+                e.stopPropagation()
+                onAssignVolunteer(task)
+              }}
+            >
+              <UserPlus className="h-3 w-3 mr-1" />
+              Assign
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>
