@@ -15,6 +15,7 @@ import {
   UserPlus, 
   Sparkles,
   GripVertical,
+  X,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { Task } from '@/app/tasks/page'
@@ -23,6 +24,7 @@ interface KanbanBoardProps {
   tasks: Task[]
   onTaskMove: (taskId: string, newStatus: Task['status']) => void
   onAssignVolunteer: (task: Task) => void
+  onUnassignVolunteer: (taskId: string, volunteerId: string) => void
 }
 
 const COLUMNS: { id: Task['status']; title: string; color: string }[] = [
@@ -38,7 +40,7 @@ const priorityConfig = {
   low: { label: 'Low', className: 'bg-green-500/10 text-green-600 border-green-500/20' },
 }
 
-export function TaskKanbanBoard({ tasks, onTaskMove, onAssignVolunteer }: KanbanBoardProps) {
+export function TaskKanbanBoard({ tasks, onTaskMove, onAssignVolunteer, onUnassignVolunteer }: KanbanBoardProps) {
   const [draggedTask, setDraggedTask] = useState<string | null>(null)
   const [dragOverColumn, setDragOverColumn] = useState<Task['status'] | null>(null)
 
@@ -107,6 +109,7 @@ export function TaskKanbanBoard({ tasks, onTaskMove, onAssignVolunteer }: Kanban
                   isDragging={draggedTask === task.id}
                   onDragStart={handleDragStart}
                   onAssignVolunteer={onAssignVolunteer}
+                  onUnassignVolunteer={onUnassignVolunteer}
                 />
               ))}
 
@@ -128,9 +131,10 @@ interface TaskCardProps {
   isDragging: boolean
   onDragStart: (e: React.DragEvent, taskId: string) => void
   onAssignVolunteer: (task: Task) => void
+  onUnassignVolunteer: (taskId: string, volunteerId: string) => void
 }
 
-function TaskCard({ task, isDragging, onDragStart, onAssignVolunteer }: TaskCardProps) {
+function TaskCard({ task, isDragging, onDragStart, onAssignVolunteer, onUnassignVolunteer }: TaskCardProps) {
   const priority = priorityConfig[task.priority]
   
   return (
@@ -138,9 +142,12 @@ function TaskCard({ task, isDragging, onDragStart, onAssignVolunteer }: TaskCard
       draggable
       onDragStart={(e) => onDragStart(e, task.id)}
       className={cn(
-        'cursor-grab active:cursor-grabbing transition-all hover:shadow-md',
+        'cursor-grab active:cursor-grabbing transition-all hover:shadow-md border-l-4',
         isDragging && 'opacity-50 rotate-2 scale-105',
-        task.priority === 'critical' && 'border-l-4 border-l-red-500'
+        task.priority === 'critical' && 'border-l-red-500',
+        task.priority === 'high' && 'border-l-orange-500',
+        task.priority === 'medium' && 'border-l-yellow-500',
+        task.priority === 'low' && 'border-l-green-500'
       )}
     >
       <CardHeader className="p-3 pb-2">
@@ -190,26 +197,37 @@ function TaskCard({ task, isDragging, onDragStart, onAssignVolunteer }: TaskCard
             {task.assignedVolunteers.length > 0 ? (
               <Popover>
                 <PopoverTrigger asChild>
-                  <button className="text-xs font-medium cursor-pointer hover:opacity-80 transition-opacity text-left">
-                    <span className="text-red-600 uppercase">
-                      {task.assignedVolunteers[0].name.split(' ')[0]}
-                    </span>
+                  <button className="px-3 py-1 rounded-full bg-blue-100 text-blue-600 text-xs font-medium cursor-pointer hover:bg-blue-200 transition-colors">
+                    {task.assignedVolunteers[0].name.split(' ')[0].toUpperCase()}
                     {task.assignedVolunteers.length > 1 && (
-                      <span className="text-muted-foreground">
+                      <span>
                         , {task.assignedVolunteers[1].name.split(' ').map(n => n[0]).join('')} +{task.assignedVolunteers.length - 1}
                       </span>
                     )}
                   </button>
                 </PopoverTrigger>
-                <PopoverContent className="w-48 p-2" align="start">
-                  <div className="space-y-1">
-                    <p className="text-xs font-medium text-muted-foreground mb-2">Assigned Volunteers</p>
+                <PopoverContent className="w-56 p-3" align="start">
+                  <div className="space-y-2">
+                    <p className="text-xs font-semibold text-muted-foreground mb-3">Assigned Volunteers</p>
                     {task.assignedVolunteers.map((volunteer) => (
-                      <div key={volunteer.id} className="flex items-center gap-2 py-1">
-                        <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-medium text-primary">
-                          {volunteer.name.split(' ').map(n => n[0]).join('')}
+                      <div key={volunteer.id} className="flex items-center justify-between py-1.5 border-b border-border last:border-0">
+                        <div className="flex items-center gap-2">
+                          <div className="h-7 w-7 rounded-full bg-blue-100 flex items-center justify-center text-xs font-medium text-blue-600">
+                            {volunteer.name.split(' ').map(n => n[0]).join('')}
+                          </div>
+                          <span className="text-sm font-medium">{volunteer.name}</span>
                         </div>
-                        <span className="text-sm">{volunteer.name}</span>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6 text-red-500 hover:text-red-600 hover:bg-red-50"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            onUnassignVolunteer(task.id, volunteer.id)
+                          }}
+                        >
+                          <X className="h-3.5 w-3.5" />
+                        </Button>
                       </div>
                     ))}
                   </div>

@@ -154,6 +154,14 @@ export default function TasksPage() {
     setShowAssignModal(false)
   }
 
+  const handleUnassignVolunteer = (taskId: string, volunteerId: string) => {
+    setTasks(tasks.map(task => 
+      task.id === taskId 
+        ? { ...task, assignedVolunteers: task.assignedVolunteers.filter(v => v.id !== volunteerId) }
+        : task
+    ))
+  }
+
   const handleAddNewTask = (newTask: Omit<Task, 'id' | 'aiAssigned'>) => {
     const task: Task = {
       ...newTask,
