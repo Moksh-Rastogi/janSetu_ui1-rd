@@ -200,6 +200,16 @@ export default function TasksPage() {
     ))
   }
 
+  const handleDeleteTask = (taskId: string) => {
+    setTasks(tasks.filter(task => task.id !== taskId))
+  }
+
+  const handleCompleteTask = (taskId: string) => {
+    setTasks(tasks.map(task => 
+      task.id === taskId ? { ...task, status: 'completed' as const } : task
+    ))
+  }
+
   const filteredTasks = tasks.filter(task => {
     if (filters.priority && filters.priority !== task.priority) {
       return false
@@ -254,6 +264,8 @@ export default function TasksPage() {
             onAssignVolunteer={handleAssignVolunteer}
             onUnassignVolunteer={handleUnassignVolunteer}
             onDonate={handleDonate}
+            onDeleteTask={handleDeleteTask}
+            onCompleteTask={handleCompleteTask}
           />
         </div>
 

@@ -19,6 +19,8 @@ import {
   Share2,
   Heart,
   IndianRupee,
+  Trash2,
+  CheckCircle,
 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -39,6 +41,8 @@ interface KanbanBoardProps {
   onAssignVolunteer: (task: Task) => void
   onUnassignVolunteer: (taskId: string, volunteerId: string) => void
   onDonate: (taskId: string, donation: { name: string; amount: number }) => void
+  onDeleteTask: (taskId: string) => void
+  onCompleteTask: (taskId: string) => void
 }
 
 const COLUMNS: { id: Task['status']; title: string; color: string }[] = [
@@ -54,7 +58,7 @@ const priorityConfig = {
   low: { label: 'Low', className: 'bg-green-500/10 text-green-600 border-green-500/20' },
 }
 
-export function TaskKanbanBoard({ tasks, onTaskMove, onAssignVolunteer, onUnassignVolunteer, onDonate }: KanbanBoardProps) {
+export function TaskKanbanBoard({ tasks, onTaskMove, onAssignVolunteer, onUnassignVolunteer, onDonate, onDeleteTask, onCompleteTask }: KanbanBoardProps) {
   const [draggedTask, setDraggedTask] = useState<string | null>(null)
   const [dragOverColumn, setDragOverColumn] = useState<Task['status'] | null>(null)
 
@@ -125,6 +129,8 @@ export function TaskKanbanBoard({ tasks, onTaskMove, onAssignVolunteer, onUnassi
                   onAssignVolunteer={onAssignVolunteer}
                   onUnassignVolunteer={onUnassignVolunteer}
                   onDonate={onDonate}
+                  onDeleteTask={onDeleteTask}
+                  onCompleteTask={onCompleteTask}
                 />
               ))}
 
@@ -148,9 +154,11 @@ interface TaskCardProps {
   onAssignVolunteer: (task: Task) => void
   onUnassignVolunteer: (taskId: string, volunteerId: string) => void
   onDonate: (taskId: string, donation: { name: string; amount: number }) => void
+  onDeleteTask: (taskId: string) => void
+  onCompleteTask: (taskId: string) => void
 }
 
-function TaskCard({ task, isDragging, onDragStart, onAssignVolunteer, onUnassignVolunteer, onDonate }: TaskCardProps) {
+function TaskCard({ task, isDragging, onDragStart, onAssignVolunteer, onUnassignVolunteer, onDonate, onDeleteTask, onCompleteTask }: TaskCardProps) {
   const priority = priorityConfig[task.priority]
   const [showDonateModal, setShowDonateModal] = useState(false)
   const [donorName, setDonorName] = useState('')
@@ -366,6 +374,42 @@ function TaskCard({ task, isDragging, onDragStart, onAssignVolunteer, onUnassign
               </Button>
             )}
           </div>
+
+          {/* Remove Button - Only for TODO tasks */}
+          {task.status === 'todo' && (
+            <div className="pt-2 border-t border-border">
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-7 px-2 text-xs w-full text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onDeleteTask(task.id)
+                }}
+              >
+                <Trash2 className="h-3 w-3 mr-1" />
+                Remove Task
+              </Button>
+            </div>
+          )}
+
+          {/* Complete Button - Only for IN-PROGRESS tasks */}
+          {task.status === 'in-progress' && (
+            <div className="pt-2 border-t border-border">
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-7 px-2 text-xs w-full text-blue-600 border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onCompleteTask(task.id)
+                }}
+              >
+                <CheckCircle className="h-3 w-3 mr-1" />
+                Mark Complete
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
 

@@ -24,9 +24,10 @@ const ROLES: { value: UserRole; label: string; color: string }[] = [
 
 interface NavbarProps {
   onMenuClick?: () => void
+  sidebarOpen?: boolean
 }
 
-export function Navbar({ onMenuClick }: NavbarProps) {
+export function Navbar({ onMenuClick, sidebarOpen }: NavbarProps) {
   const [role, setRole] = useState<UserRole>('admin')
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -38,11 +39,10 @@ export function Navbar({ onMenuClick }: NavbarProps) {
       <div className="flex h-full items-center px-4 sm:px-6 lg:px-8">
         {/* Left: Menu Button + Logo */}
         <div className="flex items-center gap-2 flex-shrink-0">
-          {/* Mobile Menu Button - beside JanSetu logo */}
+          {/* Menu Button - Always visible, toggles sidebar */}
           <Button
             variant="ghost"
             size="icon"
-            className="lg:hidden"
             onClick={onMenuClick}
           >
             <Menu className="h-5 w-5" />
