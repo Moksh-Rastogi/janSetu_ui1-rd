@@ -93,21 +93,20 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       {/* Mobile Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          className="fixed inset-0 z-30 bg-black/50 md:hidden"
           onClick={onClose}
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar - Push Layout (not overlay) */}
       <aside
         className={cn(
-          'flex h-[calc(100vh-64px)] w-64 flex-col border-r border-border bg-background transition-all duration-300',
-          // Mobile: fixed + toggle with animation
-          'fixed left-0 top-16 z-40 md:relative md:z-auto',
-          // Mobile closed state: translate off-screen
-          // Mobile open state: visible
-          // Desktop (md+): always visible regardless of state
-          isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+          'flex h-[calc(100vh-64px)] flex-col border-r border-border bg-background transition-all duration-300 ease-in-out overflow-hidden',
+          // Desktop: always visible, width-based push layout
+          'md:relative md:w-64 md:translate-x-0',
+          // Mobile: fixed overlay when open, hidden when closed
+          'fixed left-0 top-16 z-40 w-64',
+          isOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
         {/* Navigation */}

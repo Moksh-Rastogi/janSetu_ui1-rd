@@ -1,19 +1,17 @@
 'use client'
 
-import { useState } from 'react'
 import { Sidebar } from './sidebar'
 import { Navbar } from './navbar'
+import { useSidebar } from './sidebar-context'
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
-  const [sidebarOpen, setSidebarOpen] = useState(true)
-
-  const toggleSidebar = () => setSidebarOpen(!sidebarOpen)
+  const { isOpen, toggleSidebar, closeSidebar } = useSidebar()
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar onMenuClick={toggleSidebar} sidebarOpen={sidebarOpen} />
-      <div className="flex pt-16">
-        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+    <div className="min-h-screen bg-background flex flex-col">
+      <Navbar onMenuClick={toggleSidebar} sidebarOpen={isOpen} />
+      <div className="flex flex-1 pt-16">
+        <Sidebar isOpen={isOpen} onClose={closeSidebar} />
         <main className="flex-1 overflow-auto">
           {children}
         </main>
