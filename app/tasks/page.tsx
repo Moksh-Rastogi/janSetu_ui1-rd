@@ -210,6 +210,12 @@ export default function TasksPage() {
     ))
   }
 
+  const handleMoveToInProgress = (taskId: string) => {
+    setTasks(tasks.map(task => 
+      task.id === taskId ? { ...task, status: 'in-progress' as const } : task
+    ))
+  }
+
   const filteredTasks = tasks.filter(task => {
     if (filters.priority && filters.priority !== task.priority) {
       return false
@@ -266,6 +272,7 @@ export default function TasksPage() {
             onDonate={handleDonate}
             onDeleteTask={handleDeleteTask}
             onCompleteTask={handleCompleteTask}
+            onMoveToInProgress={handleMoveToInProgress}
           />
         </div>
 

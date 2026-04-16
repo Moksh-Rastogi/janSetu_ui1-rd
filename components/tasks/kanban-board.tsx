@@ -21,6 +21,7 @@ import {
   IndianRupee,
   Trash2,
   CheckCircle,
+  PlayCircle,
 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -43,6 +44,7 @@ interface KanbanBoardProps {
   onDonate: (taskId: string, donation: { name: string; amount: number }) => void
   onDeleteTask: (taskId: string) => void
   onCompleteTask: (taskId: string) => void
+  onMoveToInProgress: (taskId: string) => void
 }
 
 const COLUMNS: { id: Task['status']; title: string; color: string }[] = [
@@ -58,7 +60,7 @@ const priorityConfig = {
   low: { label: 'Low', className: 'bg-green-500/10 text-green-600 border-green-500/20' },
 }
 
-export function TaskKanbanBoard({ tasks, onTaskMove, onAssignVolunteer, onUnassignVolunteer, onDonate, onDeleteTask, onCompleteTask }: KanbanBoardProps) {
+export function TaskKanbanBoard({ tasks, onTaskMove, onAssignVolunteer, onUnassignVolunteer, onDonate, onDeleteTask, onCompleteTask, onMoveToInProgress }: KanbanBoardProps) {
   const [draggedTask, setDraggedTask] = useState<string | null>(null)
   const [dragOverColumn, setDragOverColumn] = useState<Task['status'] | null>(null)
 
@@ -131,6 +133,7 @@ export function TaskKanbanBoard({ tasks, onTaskMove, onAssignVolunteer, onUnassi
                   onDonate={onDonate}
                   onDeleteTask={onDeleteTask}
                   onCompleteTask={onCompleteTask}
+                  onMoveToInProgress={onMoveToInProgress}
                 />
               ))}
 
@@ -156,9 +159,10 @@ interface TaskCardProps {
   onDonate: (taskId: string, donation: { name: string; amount: number }) => void
   onDeleteTask: (taskId: string) => void
   onCompleteTask: (taskId: string) => void
+  onMoveToInProgress: (taskId: string) => void
 }
 
-function TaskCard({ task, isDragging, onDragStart, onAssignVolunteer, onUnassignVolunteer, onDonate, onDeleteTask, onCompleteTask }: TaskCardProps) {
+function TaskCard({ task, isDragging, onDragStart, onAssignVolunteer, onUnassignVolunteer, onDonate, onDeleteTask, onCompleteTask, onMoveToInProgress }: TaskCardProps) {
   const priority = priorityConfig[task.priority]
   const [showDonateModal, setShowDonateModal] = useState(false)
   const [donorName, setDonorName] = useState('')
@@ -375,9 +379,21 @@ function TaskCard({ task, isDragging, onDragStart, onAssignVolunteer, onUnassign
             )}
           </div>
 
-          {/* Remove Button - Only for TODO tasks */}
+          {/* Go to In Progress & Remove Button - Only for TODO tasks */}
           {task.status === 'todo' && (
-            <div className="pt-2 border-t border-border">
+            <div className="pt-2 border-t border-border space-y-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-7 px-2 text-xs w-full text-amber-600 border-amber-200 hover:bg-amber-50 hover:text-amber-700"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onMoveToInProgress(task.id)
+                }}
+              >
+                <PlayCircle className="h-3 w-3 mr-1" />
+                Go to In Progress
+              </Button>
               <Button
                 variant="outline"
                 size="sm"
