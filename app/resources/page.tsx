@@ -284,44 +284,8 @@ export default function ResourcesPage() {
             </Card>
           </div>
 
-          {/* Alerts and Search Row */}
-          <div className="grid gap-4 lg:grid-cols-3">
-            {/* Alerts Section */}
-            <div className="lg:col-span-2">
-              <ResourceAlerts resources={resources} />
-            </div>
-
-            {/* Search and Category Filter */}
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium">Quick Search</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search resources..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {CATEGORIES.map((category) => (
-                    <Button
-                      key={category}
-                      variant={selectedCategory === category ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setSelectedCategory(category)}
-                      className="text-xs"
-                    >
-                      {category}
-                    </Button>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          {/* Alerts Section */}
+          <ResourceAlerts resources={resources} />
 
           {/* Resources List/Grid */}
           <div className="flex flex-col sm:flex-row gap-4">
