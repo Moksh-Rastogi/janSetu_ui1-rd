@@ -28,6 +28,7 @@ import {
 import { cn } from '@/lib/utils'
 import { MOCK_VOLUNTEERS } from '../page'
 import { MOCK_TASKS } from '../../tasks/page'
+import { useVolunteers } from '@/components/volunteers/volunteer-context'
 
 interface Volunteer {
   id: string
@@ -365,20 +366,22 @@ const statusConfig = {
 export default function VolunteerProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
   const [assignTaskOpen, setAssignTaskOpen] = useState(false)
+  const { getVolunteerById } = useVolunteers()
   
   // Fetch volunteer data based on id from URL
-  // Check if volunteer has enhanced profile, otherwise create default from base volunteer
-  let volunteer = ENHANCED_VOLUNTEER_PROFILES[id]
+  // First check context for newly added volunteers, then fallback to enhanced profiles
+  let baseVolunteer = getVolunteerById(id)
+  let volunteer: Volunteer
   
-  // If no enhanced profile exists, try to get from base volunteers list and create default
-  if (!volunteer) {
-    const baseVolunteer = MOCK_VOLUNTEERS.find(v => v.id === id)
-    if (baseVolunteer) {
-      volunteer = createDefaultProfileFromBase(baseVolunteer)
-    } else {
-      // Fallback to first volunteer if neither exists
-      volunteer = ENHANCED_VOLUNTEER_PROFILES['v1']
-    }
+  if (baseVolunteer) {
+    // Create enhanced profile from context volunteer
+    volunteer = createDefaultProfileFromBase(baseVolunteer)
+  } else if (ENHANCED_VOLUNTEER_PROFILES[id]) {
+    // Use pre-built enhanced profile for original volunteers
+    volunteer = ENHANCED_VOLUNTEER_PROFILES[id]
+  } else {
+    // Fallback to first volunteer
+    volunteer = ENHANCED_VOLUNTEER_PROFILES['v1']
   }
   
   // Calculate availability based on assigned tasks

@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Search, UserPlus, Users, Trophy, UsersRound } from 'lucide-react'
 import { MOCK_TASKS } from '../tasks/page'
 import { AddVolunteerModal } from '@/components/volunteers/add-volunteer-modal'
+import { useVolunteers } from '@/components/volunteers/volunteer-context'
 
 export interface Volunteer {
   id: string
@@ -166,10 +167,10 @@ export default function VolunteersPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [activeTab, setActiveTab] = useState('volunteers')
   const [showAddModal, setShowAddModal] = useState(false)
-  const [volunteers, setVolunteers] = useState<Volunteer[]>(MOCK_VOLUNTEERS)
+  const { volunteers, addVolunteer } = useVolunteers()
 
   const handleAddVolunteer = (newVolunteer: Volunteer) => {
-    setVolunteers(prev => [...prev, newVolunteer])
+    addVolunteer(newVolunteer)
   }
 
   const filteredVolunteers = volunteers.filter(volunteer =>

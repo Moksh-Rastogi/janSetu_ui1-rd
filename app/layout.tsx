@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { SidebarProvider } from '@/components/layout/sidebar-context'
+import { VolunteerProvider } from '@/components/volunteers/volunteer-context'
+import { MOCK_VOLUNTEERS } from './volunteers/page'
 import './globals.css'
 
 const _geist = Geist({ subsets: ["latin"] });
@@ -45,9 +47,11 @@ export default function RootLayout({
   return (
     <html lang="en" className="bg-background">
       <body className="font-sans antialiased">
-        <SidebarProvider>
-          {children}
-        </SidebarProvider>
+        <VolunteerProvider initialVolunteers={MOCK_VOLUNTEERS}>
+          <SidebarProvider>
+            {children}
+          </SidebarProvider>
+        </VolunteerProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
