@@ -143,8 +143,8 @@ const MOCK_NGOS = [
 export default function NetworkPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [filters, setFilters] = useState({
-    location: '',
-    category: '',
+    location: 'all',
+    category: 'all',
     trustScore: 0,
     activeCampaigns: false,
   })
@@ -156,10 +156,10 @@ export default function NetworkPage() {
       ngo.description.toLowerCase().includes(searchQuery.toLowerCase())
 
     const matchesLocation =
-      !filters.location || ngo.location.includes(filters.location)
+      filters.location === 'all' || ngo.location.includes(filters.location)
 
     const matchesCategory =
-      !filters.category ||
+      filters.category === 'all' ||
       ngo.focusAreas.some((area) =>
         area.toLowerCase().includes(filters.category.toLowerCase())
       )

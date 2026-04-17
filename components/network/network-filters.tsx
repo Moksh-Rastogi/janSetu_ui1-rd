@@ -24,7 +24,6 @@ interface NetworkFiltersProps {
 }
 
 const LOCATIONS = [
-  'All Locations',
   'Mumbai, Maharashtra',
   'Delhi, Delhi',
   'Bangalore, Karnataka',
@@ -34,7 +33,7 @@ const LOCATIONS = [
 ]
 
 const CATEGORIES = [
-  { value: '', label: 'All Categories' },
+  { value: 'all', label: 'All Categories' },
   { value: 'healthcare', label: 'Healthcare' },
   { value: 'education', label: 'Education' },
   { value: 'water', label: 'Water & Sanitation' },
@@ -45,12 +44,12 @@ const CATEGORIES = [
 
 export function NetworkFilters({ filters, setFilters }: NetworkFiltersProps) {
   const hasActiveFilters =
-    filters.location || filters.category || filters.trustScore > 0 || filters.activeCampaigns
+    filters.location !== 'all' || filters.category !== 'all' || filters.trustScore > 0 || filters.activeCampaigns
 
   const handleReset = () => {
     setFilters({
-      location: '',
-      category: '',
+      location: 'all',
+      category: 'all',
       trustScore: 0,
       activeCampaigns: false,
     })
@@ -81,15 +80,16 @@ export function NetworkFilters({ filters, setFilters }: NetworkFiltersProps) {
         <div className="space-y-2">
           <label className="text-sm font-medium">Location</label>
           <Select
-            value={filters.location}
+            value={filters.location || 'all'}
             onValueChange={(value) =>
-              setFilters({ ...filters, location: value === 'All Locations' ? '' : value })
+              setFilters({ ...filters, location: value === 'all' ? 'all' : value })
             }
           >
             <SelectTrigger className="h-9">
               <SelectValue placeholder="Select location" />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value="all">All Locations</SelectItem>
               {LOCATIONS.map((location) => (
                 <SelectItem key={location} value={location}>
                   {location}
@@ -103,9 +103,9 @@ export function NetworkFilters({ filters, setFilters }: NetworkFiltersProps) {
         <div className="space-y-2">
           <label className="text-sm font-medium">Category</label>
           <Select
-            value={filters.category}
+            value={filters.category || 'all'}
             onValueChange={(value) =>
-              setFilters({ ...filters, category: value })
+              setFilters({ ...filters, category: value === 'all' ? 'all' : value })
             }
           >
             <SelectTrigger className="h-9">
