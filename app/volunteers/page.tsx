@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Search, UserPlus, Users, Trophy, UsersRound } from 'lucide-react'
 import { MOCK_TASKS } from '../tasks/page'
+import { AddVolunteerModal } from '@/components/volunteers/add-volunteer-modal'
 
 export interface Volunteer {
   id: string
@@ -164,8 +165,14 @@ export const MOCK_VOLUNTEERS: Volunteer[] = [
 export default function VolunteersPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [activeTab, setActiveTab] = useState('volunteers')
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [volunteers, setVolunteers] = useState<Volunteer[]>(MOCK_VOLUNTEERS)
 
-  const filteredVolunteers = MOCK_VOLUNTEERS.filter(volunteer =>
+  const handleAddVolunteer = (newVolunteer: Volunteer) => {
+    setVolunteers(prev => [...prev, newVolunteer])
+  }
+
+  const filteredVolunteers = volunteers.filter(volunteer =>
     volunteer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     volunteer.skills.some(skill => skill.toLowerCase().includes(searchQuery.toLowerCase()))
   )
@@ -182,7 +189,7 @@ export default function VolunteersPage() {
                 Manage volunteers, track performance, and build teams
               </p>
             </div>
-            <Button className="gap-2 w-fit">
+            <Button className="gap-2 w-fit" onClick={() => setShowAddModal(true)}>
               <UserPlus className="h-4 w-4" />
               Add Volunteer
             </Button>
@@ -221,15 +228,22 @@ export default function VolunteersPage() {
             </TabsContent>
 
             <TabsContent value="leaderboard" className="mt-6">
-              <Leaderboard volunteers={MOCK_VOLUNTEERS} />
+              <Leaderboard volunteers={volunteers} />
             </TabsContent>
 
             <TabsContent value="teams" className="mt-6">
-              <TeamFormation volunteers={MOCK_VOLUNTEERS} />
+              <TeamFormation volunteers={volunteers} />
             </TabsContent>
           </Tabs>
         </div>
       </div>
+
+      {/* Add Volunteer Modal */}
+      <AddVolunteerModal
+        open={showAddModal}
+        onOpenChange={setShowAddModal}
+        onAdd={handleAddVolunteer}
+      />
     </AppLayout>
   )
 }
