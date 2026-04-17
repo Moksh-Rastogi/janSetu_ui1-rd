@@ -250,25 +250,25 @@ For questions or feedback, contact us at support@jansetu.org
         </DialogHeader>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
-          <div className="p-4 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20">
-            <Heart className="h-5 w-5 text-primary mb-2" />
-            <div className="text-2xl font-bold text-foreground">{formatCurrency(totalAmount)}</div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-4">
+          <div className="p-2 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20">
+            <Heart className="h-4 w-4 text-primary mb-1" />
+            <div className="text-lg font-bold text-foreground">{formatCurrency(totalAmount)}</div>
             <div className="text-xs text-muted-foreground">Total Donated</div>
           </div>
-          <div className="p-4 rounded-xl bg-gradient-to-br from-secondary/10 to-secondary/5 border border-secondary/20">
-            <Users className="h-5 w-5 text-secondary mb-2" />
-            <div className="text-2xl font-bold text-foreground">{totalImpact}</div>
+          <div className="p-2 rounded-lg bg-gradient-to-br from-secondary/10 to-secondary/5 border border-secondary/20">
+            <Users className="h-4 w-4 text-secondary mb-1" />
+            <div className="text-lg font-bold text-foreground">{totalImpact}</div>
             <div className="text-xs text-muted-foreground">People Helped</div>
           </div>
-          <div className="p-4 rounded-xl bg-gradient-to-br from-accent/10 to-accent/5 border border-accent/20">
-            <Package className="h-5 w-5 text-accent mb-2" />
-            <div className="text-2xl font-bold text-foreground">{completedDonations.length}</div>
+          <div className="p-2 rounded-lg bg-gradient-to-br from-accent/10 to-accent/5 border border-accent/20">
+            <Package className="h-4 w-4 text-accent mb-1" />
+            <div className="text-lg font-bold text-foreground">{completedDonations.length}</div>
             <div className="text-xs text-muted-foreground">Campaigns Supported</div>
           </div>
-          <div className="p-4 rounded-xl bg-gradient-to-br from-green-500/10 to-green-500/5 border border-green-500/20">
-            <Target className="h-5 w-5 text-green-600 mb-2" />
-            <div className="text-2xl font-bold text-foreground">4</div>
+          <div className="p-2 rounded-lg bg-gradient-to-br from-green-500/10 to-green-500/5 border border-green-500/20">
+            <Target className="h-4 w-4 text-green-600 mb-1" />
+            <div className="text-lg font-bold text-foreground">4</div>
             <div className="text-xs text-muted-foreground">Milestones Achieved</div>
           </div>
         </div>

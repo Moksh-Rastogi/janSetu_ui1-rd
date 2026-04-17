@@ -89,16 +89,16 @@ export function DonorDashboard({
       </CardHeader>
       <CardContent>
         {/* Summary Stats */}
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="p-4 rounded-xl bg-primary/5 border border-primary/10">
-            <div className="text-sm text-muted-foreground">Total Donated</div>
-            <div className="text-2xl font-bold text-primary">
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          <div className="p-2 rounded-lg bg-primary/5 border border-primary/10">
+            <div className="text-xs text-muted-foreground">Total Donated</div>
+            <div className="text-lg font-bold text-primary mt-0.5">
               {formatCurrency(totalDonated)}
             </div>
           </div>
-          <div className="p-4 rounded-xl bg-secondary/5 border border-secondary/10">
-            <div className="text-sm text-muted-foreground">People Helped</div>
-            <div className="text-2xl font-bold text-secondary">
+          <div className="p-2 rounded-lg bg-secondary/5 border border-secondary/10">
+            <div className="text-xs text-muted-foreground">People Helped</div>
+            <div className="text-lg font-bold text-secondary mt-0.5">
               {totalImpact.toLocaleString()}
             </div>
           </div>
