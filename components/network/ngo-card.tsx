@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { MapPin, Star, CheckCircle2, Zap } from 'lucide-react'
 
 interface NGO {
@@ -79,10 +80,12 @@ export function NGOCard({ ngo, isSelected, onSelect }: NGOCardProps) {
           </div>
         </div>
 
-        {/* Click hint */}
-        <p className="text-xs text-muted-foreground text-center pt-2">
-          Click to view full profile
-        </p>
+        {/* View Profile Button */}
+        <div className="pt-2">
+          <Button variant="outline" className="w-full">
+            View Profile
+          </Button>
+        </div>
       </CardContent>
     </Card>
   )
