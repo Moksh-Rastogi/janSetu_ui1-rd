@@ -131,8 +131,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           'md:relative',
           // Mobile: fixed overlay
           'fixed left-0 top-16 z-40',
-          // Dynamic width based on open state
-          isOpen ? 'w-64 md:w-64' : 'w-0 md:w-64'
+          // Dynamic width based on open state - works on both mobile and desktop
+          isOpen ? 'w-64' : 'w-0 overflow-hidden'
         )}
       >
         {/* Navigation */}
