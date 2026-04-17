@@ -100,7 +100,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       {/* Sidebar - Width-based push layout on desktop, overlay on mobile */}
       <aside
         className={cn(
-          'flex flex-col border-r border-border bg-background transition-all duration-300 ease-in-out overflow-hidden',
+          'flex flex-col border-r border-border bg-background transition-all duration-300 ease-in-out',
           'h-[calc(100vh-64px)]',
           // Desktop: relative positioning for width-based push layout
           'md:relative',
@@ -111,7 +111,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         )}
       >
         {/* Navigation */}
-        <nav className="flex-1 overflow-hidden px-4 py-6">
+        <nav className="flex-1 overflow-y-auto px-4 py-6">
           <div className="space-y-1">
             {MENU_ITEMS.map((item) => {
               const Icon = item.icon
