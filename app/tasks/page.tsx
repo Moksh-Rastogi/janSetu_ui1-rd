@@ -278,7 +278,6 @@ export default function TasksPage() {
     category: [],
   })
   const { updateVolunteerAvailability } = useVolunteers()
-  const [showNewTaskModal, setShowNewTaskModal] = useState(false)
 
   const handleTaskMove = (taskId: string, newStatus: Task['status']) => {
     setTasks(tasks.map(task => 
