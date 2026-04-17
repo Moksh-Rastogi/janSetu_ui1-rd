@@ -5,7 +5,7 @@ import { AppLayout } from '@/components/layout/app-layout'
 import { AnalyticsKPIGrid } from '@/components/analytics/analytics-kpi-grid'
 import { RegionComparisonChart } from '@/components/analytics/region-comparison-chart'
 import { TrendAnalysisChart } from '@/components/analytics/trend-analysis-chart'
-import { AIAnalyticsInsights } from '@/components/analytics/ai-analytics-insights'
+
 import { NGOTrustScore } from '@/components/analytics/ngo-trust-score'
 import { PredictiveInsights } from '@/components/analytics/predictive-insights'
 import { Button } from '@/components/ui/button'
@@ -78,45 +78,7 @@ const TREND_DATA = [
   { month: 'Jun', donations: 2800000, volunteers: 520, impact: 2400 },
 ]
 
-// Mock Data for AI Insights
-const AI_INSIGHTS = [
-  {
-    id: '1',
-    type: 'allocation' as const,
-    title: 'Optimize fund allocation to Eastern region',
-    description: 'Analysis shows 28% higher impact per rupee in Eastern districts. Consider reallocating 15% of central funds.',
-    confidence: 94,
-    action: 'View Allocation Plan',
-    priority: 'high' as const,
-  },
-  {
-    id: '2',
-    type: 'impact' as const,
-    title: 'High impact zone identified: District X',
-    description: 'Healthcare initiatives in District X show 3x higher engagement. Expand current programs to maximize reach.',
-    confidence: 89,
-    action: 'Explore Zone',
-    priority: 'high' as const,
-  },
-  {
-    id: '3',
-    type: 'prediction' as const,
-    title: 'Donation surge expected next month',
-    description: 'Based on historical patterns and current trends, expect 35% increase in donations during festival season.',
-    confidence: 85,
-    action: 'Plan Campaigns',
-    priority: 'medium' as const,
-  },
-  {
-    id: '4',
-    type: 'warning' as const,
-    title: 'Volunteer fatigue detected in Northern region',
-    description: 'Task completion rates have dropped 15% in the last 2 weeks. Consider rotating volunteers or reducing workload.',
-    confidence: 91,
-    action: 'View Details',
-    priority: 'medium' as const,
-  },
-]
+
 
 // Mock Data for Trust Score
 const TRUST_INDICATORS = [
@@ -147,9 +109,7 @@ export default function AnalyticsPage() {
     setTimeout(() => setIsRefreshing(false), 1500)
   }
 
-  const handleAIAction = (id: string) => {
-    console.log('AI Action triggered for insight:', id)
-  }
+
 
   return (
     <AppLayout>
@@ -205,17 +165,11 @@ export default function AnalyticsPage() {
 
             {/* Overview Tab */}
             <TabsContent value="overview" className="mt-6 space-y-6">
-              <div className="grid gap-6 lg:grid-cols-2">
-                <TrendAnalysisChart
-                  data={TREND_DATA}
-                  title="Performance Trends"
-                  description="Track donations, volunteers, and impact over time"
-                />
-                <AIAnalyticsInsights
-                  insights={AI_INSIGHTS.slice(0, 3)}
-                  onAction={handleAIAction}
-                />
-              </div>
+              <TrendAnalysisChart
+                data={TREND_DATA}
+                title="Performance Trends"
+                description="Track donations, volunteers, and impact over time"
+              />
             </TabsContent>
 
             {/* Regions Tab */}
@@ -225,55 +179,27 @@ export default function AnalyticsPage() {
                 title="Regional Performance"
                 description="Compare issues, resolutions, and volunteer activity across regions"
               />
-              <AIAnalyticsInsights
-                insights={AI_INSIGHTS.filter(i => i.type === 'allocation' || i.type === 'warning')}
-                onAction={handleAIAction}
-              />
             </TabsContent>
 
             {/* Predictions Tab */}
             <TabsContent value="predictions" className="mt-6 space-y-6">
-              <div className="grid gap-6 lg:grid-cols-2">
-                <PredictiveInsights
-                  data={PREDICTION_DATA}
-                  metric="donations"
-                  growth={35}
-                  nextMilestone="Expected to reach ₹50L total donations by September"
-                />
-                <AIAnalyticsInsights
-                  insights={AI_INSIGHTS.filter(i => i.type === 'prediction' || i.type === 'impact')}
-                  onAction={handleAIAction}
-                />
-              </div>
+              <PredictiveInsights
+                data={PREDICTION_DATA}
+                metric="donations"
+                growth={35}
+                nextMilestone="Expected to reach ₹50L total donations by September"
+              />
             </TabsContent>
 
             {/* Trust Tab */}
             <TabsContent value="trust" className="mt-6 space-y-6">
-              <div className="grid gap-6 lg:grid-cols-2">
-                <NGOTrustScore
-                  score={88}
-                  maxScore={100}
-                  isVerified={true}
-                  indicators={TRUST_INDICATORS}
-                  lastAuditDate="March 15, 2024"
-                />
-                <div className="space-y-6">
-                  <AIAnalyticsInsights
-                    insights={[
-                      {
-                        id: 'trust-1',
-                        type: 'impact' as const,
-                        title: 'Trust score improvement opportunity',
-                        description: 'Complete monthly donor communication updates to improve trust score by 5 points.',
-                        confidence: 95,
-                        action: 'View Recommendations',
-                        priority: 'medium' as const,
-                      },
-                    ]}
-                    onAction={handleAIAction}
-                  />
-                </div>
-              </div>
+              <NGOTrustScore
+                score={88}
+                maxScore={100}
+                isVerified={true}
+                indicators={TRUST_INDICATORS}
+                lastAuditDate="March 15, 2024"
+              />
             </TabsContent>
           </Tabs>
         </div>
