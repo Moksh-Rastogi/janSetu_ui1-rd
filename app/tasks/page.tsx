@@ -161,7 +161,7 @@ const REGISTERED_VOLUNTEERS: Volunteer[] = [
   },
 ]
 
-const MOCK_TASKS: Task[] = [
+export const MOCK_TASKS: Task[] = [
   {
     id: '1',
     title: 'Distribute Relief Supplies',

@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Search, UserPlus, Users, Trophy, UsersRound } from 'lucide-react'
+import { MOCK_TASKS } from '../tasks/page'
 
 export interface Volunteer {
   id: string
@@ -158,77 +159,7 @@ export const MOCK_VOLUNTEERS: Volunteer[] = [
   },
 ]
 
-const MOCK_TASKS: Task[] = [
-  {
-    id: '1',
-    title: 'Distribute Relief Supplies',
-    description: 'Distribute food and water packets to affected families in Sector 12',
-    priority: 'critical',
-    location: 'Sector 12, Delhi',
-    status: 'todo',
-    assignedVolunteers: [
-      { id: 'v1', name: 'Raj Patel' },
-      { id: 'v2', name: 'Priya Singh' },
-    ],
-    aiAssigned: true,
-    dueDate: '2024-01-15',
-    category: 'Relief',
-  },
-  {
-    id: '2',
-    title: 'Medical Camp Setup',
-    description: 'Set up medical camp for health checkups and first aid',
-    priority: 'high',
-    location: 'Community Hall, Noida',
-    status: 'todo',
-    assignedVolunteers: [{ id: 'v3', name: 'Dr. Amit Kumar' }],
-    aiAssigned: false,
-    dueDate: '2024-01-16',
-    category: 'Medical',
-  },
-  {
-    id: '3',
-    title: 'Volunteer Training Session',
-    description: 'Conduct training for new volunteers on emergency protocols',
-    priority: 'medium',
-    location: 'NGO Office, Gurgaon',
-    status: 'in-progress',
-    assignedVolunteers: [{ id: 'v4', name: 'Sneha Gupta' }],
-    aiAssigned: true,
-    dueDate: '2024-01-14',
-    category: 'Training',
-  },
-  {
-    id: '4',
-    title: 'Damage Assessment Survey',
-    description: 'Survey flood-affected areas and document damage for relief planning',
-    priority: 'high',
-    location: 'Multiple Districts',
-    status: 'in-progress',
-    assignedVolunteers: [
-      { id: 'v5', name: 'Vikram Sharma' },
-      { id: 'v6', name: 'Anita Rao' },
-    ],
-    aiAssigned: false,
-    dueDate: '2024-01-17',
-    category: 'Survey',
-  },
-  {
-    id: '5',
-    title: 'Shelter Setup Complete',
-    description: 'Emergency shelter setup for displaced families',
-    priority: 'critical',
-    location: 'Stadium Ground, Delhi',
-    status: 'completed',
-    assignedVolunteers: [
-      { id: 'v7', name: 'Rahul Verma' },
-      { id: 'v8', name: 'Meera Joshi' },
-    ],
-    aiAssigned: true,
-    dueDate: '2024-01-12',
-    category: 'Shelter',
-  },
-]
+
 
 export default function VolunteersPage() {
   const [searchQuery, setSearchQuery] = useState('')
