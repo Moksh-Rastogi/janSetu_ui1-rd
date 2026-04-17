@@ -154,7 +154,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                   onClick={onClose}
                 >
                   <Icon className="h-5 w-5 flex-shrink-0" />
-                  <span className="md:block hidden">{item.label}</span>
+                  <span>{item.label}</span>
                 </Link>
               )
             })}
