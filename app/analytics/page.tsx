@@ -8,6 +8,7 @@ import { TrendAnalysisChart } from '@/components/analytics/trend-analysis-chart'
 
 import { NGOTrustScore } from '@/components/analytics/ngo-trust-score'
 import { PredictiveInsights } from '@/components/analytics/predictive-insights'
+import { ReportExportDialog } from '@/components/analytics/report-export-dialog'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
@@ -103,10 +104,32 @@ const PREDICTION_DATA = [
 
 export default function AnalyticsPage() {
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const [isExportDialogOpen, setIsExportDialogOpen] = useState(false)
 
   const handleRefresh = () => {
     setIsRefreshing(true)
     setTimeout(() => setIsRefreshing(false), 1500)
+  }
+
+  // Report data structure for export
+  const reportData = {
+    title: 'Analytics Dashboard Report',
+    generatedDate: new Date().toLocaleString('en-IN'),
+    kpis: ANALYTICS_KPIS.map(kpi => ({
+      title: kpi.title,
+      value: kpi.value + (kpi.unit ? ` ${kpi.unit}` : ''),
+      trend: `${kpi.trend.direction === 'up' ? '↑' : '↓'} ${kpi.trend.value}% ${kpi.trend.period}`,
+    })),
+    regions: REGION_DATA,
+    trends: TREND_DATA,
+    predictions: PREDICTION_DATA.filter(p => p.month && p.predicted),
+    trustScore: {
+      score: 88,
+      indicators: TRUST_INDICATORS.map(indicator => ({
+        label: indicator.label,
+        status: indicator.status,
+      })),
+    },
   }
 
 
@@ -128,9 +151,9 @@ export default function AnalyticsPage() {
                 <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
                 Refresh
               </Button>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={() => setIsExportDialogOpen(true)}>
                 <Download className="h-4 w-4 mr-2" />
-                Export
+                Export Report
               </Button>
             </div>
           </div>
@@ -204,6 +227,12 @@ export default function AnalyticsPage() {
           </Tabs>
         </div>
       </div>
+
+      <ReportExportDialog
+        open={isExportDialogOpen}
+        onOpenChange={setIsExportDialogOpen}
+        reportData={reportData}
+      />
     </AppLayout>
   )
 }
