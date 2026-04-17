@@ -5,6 +5,7 @@ import { AppLayout } from '@/components/layout/app-layout'
 import { NGOCard } from '@/components/network/ngo-card'
 import { NGODetailPanel } from '@/components/network/ngo-detail-panel'
 import { NetworkFilters } from '@/components/network/network-filters'
+import { AddNGODialog } from '@/components/network/add-ngo-dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Search, Network } from 'lucide-react'
@@ -140,6 +141,32 @@ const MOCK_NGOS = [
   },
 ]
 
+interface ImpactStat {
+  label: string
+  value: string
+}
+
+interface Campaign {
+  id: string
+  name: string
+  status: 'active' | 'completed'
+  progress: number
+}
+
+interface NGO {
+  id: string
+  name: string
+  location: string
+  focusAreas: string[]
+  trustScore: number
+  isVerified: boolean
+  activeCampaigns: number
+  description: string
+  campaignsArray: Campaign[]
+  resources: string[]
+  impactStats: ImpactStat[]
+}
+
 export default function NetworkPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [filters, setFilters] = useState({
@@ -149,8 +176,37 @@ export default function NetworkPage() {
     activeCampaigns: false,
   })
   const [selectedNGO, setSelectedNGO] = useState<string | null>(null)
+  const [ngos, setNgos] = useState<NGO[]>(MOCK_NGOS)
 
-  const filteredNGOs = MOCK_NGOS.filter((ngo) => {
+  const handleAddNGO = (formData: {
+    name: string
+    location: string
+    description: string
+    focusAreas: string[]
+    resources: string[]
+    impactStats: ImpactStat[]
+  }) => {
+    const newNGO: NGO = {
+      id: `ngo-${Date.now()}`,
+      name: formData.name,
+      location: formData.location,
+      description: formData.description,
+      focusAreas: formData.focusAreas,
+      trustScore: 100,
+      isVerified: false,
+      activeCampaigns: 0,
+      campaignsArray: [],
+      resources: formData.resources.length > 0 ? formData.resources : ['To be added'],
+      impactStats: formData.impactStats.length > 0 ? formData.impactStats : [
+        { label: 'People Served', value: '0' },
+        { label: 'Projects', value: '0' },
+        { label: 'Volunteers', value: '0' },
+      ],
+    }
+    setNgos([newNGO, ...ngos])
+  }
+
+  const filteredNGOs = ngos.filter((ngo) => {
     const matchesSearch =
       ngo.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       ngo.description.toLowerCase().includes(searchQuery.toLowerCase())
@@ -178,7 +234,7 @@ export default function NetworkPage() {
     )
   })
 
-  const selectedNGOData = MOCK_NGOS.find((ngo) => ngo.id === selectedNGO)
+  const selectedNGOData = ngos.find((ngo) => ngo.id === selectedNGO)
 
   return (
     <AppLayout>
@@ -195,11 +251,14 @@ export default function NetworkPage() {
                 Discover and collaborate with NGOs in the ecosystem
               </p>
             </div>
-            <div className="text-right">
-              <p className="text-2xl font-bold text-foreground">
-                {filteredNGOs.length}
-              </p>
-              <p className="text-sm text-muted-foreground">NGOs Found</p>
+            <div className="flex items-center gap-4">
+              <div className="text-right">
+                <p className="text-2xl font-bold text-foreground">
+                  {filteredNGOs.length}
+                </p>
+                <p className="text-sm text-muted-foreground">NGOs Found</p>
+              </div>
+              <AddNGODialog onAddNGO={handleAddNGO} />
             </div>
           </div>
 
