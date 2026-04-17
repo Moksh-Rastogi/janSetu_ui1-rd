@@ -90,11 +90,11 @@ const FUND_FLOW_STEPS = [
 ]
 
 const FUND_DISTRIBUTION = [
-  { name: 'Emergency Relief', value: 1500000, color: 'hsl(var(--chart-1))' },
-  { name: 'Education', value: 900000, color: 'hsl(var(--chart-2))' },
-  { name: 'Healthcare', value: 800000, color: 'hsl(var(--chart-3))' },
-  { name: 'Infrastructure', value: 600000, color: 'hsl(var(--chart-4))' },
-  { name: 'Empowerment', value: 400000, color: 'hsl(var(--chart-5))' },
+  { name: 'Emergency Relief', value: 1500000, color: '#FF6B6B' },
+  { name: 'Education', value: 900000, color: '#4ECDC4' },
+  { name: 'Healthcare', value: 800000, color: '#FFE66D' },
+  { name: 'Infrastructure', value: 600000, color: '#95E1D3' },
+  { name: 'Women Empowerment', value: 400000, color: '#AA96DA' },
 ]
 
 const IMPACT_METRICS = [
