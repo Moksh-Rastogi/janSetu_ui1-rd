@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { MapPin, Star, CheckCircle2, Zap } from 'lucide-react'
 
@@ -80,15 +79,10 @@ export function NGOCard({ ngo, isSelected, onSelect }: NGOCardProps) {
           </div>
         </div>
 
-        {/* Actions */}
-        <div className="flex gap-2 pt-2">
-          <Button size="sm" variant="outline" className="flex-1">
-            View Profile
-          </Button>
-          <Button size="sm" className="flex-1">
-            Collaborate
-          </Button>
-        </div>
+        {/* Click hint */}
+        <p className="text-xs text-muted-foreground text-center pt-2">
+          Click to view full profile
+        </p>
       </CardContent>
     </Card>
   )
