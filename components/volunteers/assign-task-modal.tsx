@@ -92,13 +92,15 @@ export function AssignTaskModal({
   const volunteerBusyCount = volunteerAssignedInProgressTasks.length + volunteerAssignedToDoTasks.length
   const isVolunteerBusy = volunteerBusyCount > 0
 
-  // Filter tasks by volunteer skills
+  // Filter tasks by volunteer skills and exclude already-assigned tasks
   const relevantTasks = tasks.filter(task => {
     const taskCategory = task.category.toLowerCase()
     const hasSkill = volunteer.skills.some(skill =>
       skill.toLowerCase().includes(taskCategory) || taskCategory.includes(skill.toLowerCase())
     )
-    return hasSkill
+    // Exclude tasks the volunteer is already assigned to
+    const isAlreadyAssigned = task.assignedVolunteers.some(v => v.id === volunteer.id)
+    return hasSkill && !isAlreadyAssigned
   })
 
   // Separate tasks by status
