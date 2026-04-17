@@ -42,9 +42,9 @@ function getTypeIcon(type: SearchItem['type']) {
 // Get link for search result
 function getResultLink(item: SearchItem): string {
   switch (item.type) {
-    case 'campaign': return '/crisis-map'
-    case 'task': return '/tasks'
-    case 'ngo': return '/crisis-map'
+    case 'campaign': return `/campaigns/${item.id}`
+    case 'task': return `/tasks/${item.id}`
+    case 'ngo': return `/network/${item.id}`
     case 'volunteer': return `/volunteers/${item.id}`
     default: return '/'
   }
