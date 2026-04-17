@@ -45,8 +45,10 @@ export function AddResourceDialog({ onAddResource, categories }: AddResourceDial
     allocatedQuantity: number,
     expiryDate: string
   ): Resource['status'] => {
-    const available = quantity - allocatedQuantity
-    const ratio = quantity > 0 ? available / quantity : 0
+    // Check for out of stock first (0 units and 0 allocated)
+    if (quantity === 0 && allocatedQuantity === 0) {
+      return 'out-of-stock'
+    }
 
     // Check if expiry date is within 30 days
     const today = new Date()
@@ -54,8 +56,8 @@ export function AddResourceDialog({ onAddResource, categories }: AddResourceDial
     const daysUntilExpiry = Math.ceil((expiry.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
     const isExpiringSoon = daysUntilExpiry <= 30 && daysUntilExpiry > 0
 
-    // If expiring soon takes priority for display
-    if (isExpiringSoon) {
+    // If expiring soon takes priority for display (but only if there is stock)
+    if (isExpiringSoon && quantity > 0) {
       return 'expiring-soon'
     }
 
@@ -63,6 +65,9 @@ export function AddResourceDialog({ onAddResource, categories }: AddResourceDial
     if (quantity === 0) {
       return 'out-of-stock'
     }
+
+    const available = quantity - allocatedQuantity
+    const ratio = quantity > 0 ? available / quantity : 0
 
     if (ratio < 0.5) {
       return 'low-stock'
