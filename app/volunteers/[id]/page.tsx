@@ -76,6 +76,28 @@ interface Task {
   }[]
 }
 
+// Function to create default profile for new volunteers
+function createDefaultProfileFromBase(baseVolunteer: any): Volunteer {
+  return {
+    id: baseVolunteer.id,
+    name: baseVolunteer.name,
+    email: baseVolunteer.email || `${baseVolunteer.name.toLowerCase().replace(/\s+/g, '.')}@jansetu.org`,
+    phone: baseVolunteer.phone || 'Not provided',
+    skills: baseVolunteer.skills || [],
+    availability: baseVolunteer.availability || 'available',
+    rating: baseVolunteer.rating || 5,
+    reliabilityScore: baseVolunteer.reliabilityScore || 99,
+    completedTasks: baseVolunteer.completedTasks || 0,
+    points: baseVolunteer.points || 0,
+    badges: [],
+    joinedDate: baseVolunteer.joinedDate || new Date().toISOString().split('T')[0],
+    location: baseVolunteer.location || 'Not specified',
+    ngoAssociations: baseVolunteer.ngoAssociations || [],
+    taskHistory: [],
+    monthlyStats: [],
+  }
+}
+
 // Enhanced volunteer profiles with contact info and history
 const ENHANCED_VOLUNTEER_PROFILES: Record<string, Volunteer> = {
   v1: {
@@ -345,7 +367,19 @@ export default function VolunteerProfilePage({ params }: { params: Promise<{ id:
   const [assignTaskOpen, setAssignTaskOpen] = useState(false)
   
   // Fetch volunteer data based on id from URL
-  const volunteer = ENHANCED_VOLUNTEER_PROFILES[id] || ENHANCED_VOLUNTEER_PROFILES['v1']
+  // Check if volunteer has enhanced profile, otherwise create default from base volunteer
+  let volunteer = ENHANCED_VOLUNTEER_PROFILES[id]
+  
+  // If no enhanced profile exists, try to get from base volunteers list and create default
+  if (!volunteer) {
+    const baseVolunteer = MOCK_VOLUNTEERS.find(v => v.id === id)
+    if (baseVolunteer) {
+      volunteer = createDefaultProfileFromBase(baseVolunteer)
+    } else {
+      // Fallback to first volunteer if neither exists
+      volunteer = ENHANCED_VOLUNTEER_PROFILES['v1']
+    }
+  }
   
   // Calculate availability based on assigned tasks
   const volunteerAssignedInProgressTasks = MOCK_TASKS.filter(
@@ -532,39 +566,46 @@ export default function VolunteerProfilePage({ params }: { params: Promise<{ id:
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid gap-6 sm:grid-cols-2">
-                      {/* Monthly Tasks Chart (simplified) */}
-                      <div>
-                        <p className="text-sm font-medium mb-4">Monthly Tasks</p>
-                        <div className="space-y-3">
-                          {volunteer.monthlyStats.map(stat => (
-                            <div key={stat.month} className="flex items-center gap-3">
-                              <span className="text-sm text-muted-foreground w-10">{stat.month}</span>
-                              <div className="flex-1">
-                                <Progress value={(stat.tasks / 15) * 100} className="h-2" />
-                              </div>
-                              <span className="text-sm font-medium w-8">{stat.tasks}</span>
-                            </div>
-                          ))}
-                        </div>
+                    {volunteer.monthlyStats.length === 0 ? (
+                      <div className="text-center py-8">
+                        <TrendingUp className="h-12 w-12 text-muted-foreground mx-auto mb-3 opacity-50" />
+                        <p className="text-muted-foreground">No performance analytics yet</p>
                       </div>
+                    ) : (
+                      <div className="grid gap-6 sm:grid-cols-2">
+                        {/* Monthly Tasks Chart (simplified) */}
+                        <div>
+                          <p className="text-sm font-medium mb-4">Monthly Tasks</p>
+                          <div className="space-y-3">
+                            {volunteer.monthlyStats.map(stat => (
+                              <div key={stat.month} className="flex items-center gap-3">
+                                <span className="text-sm text-muted-foreground w-10">{stat.month}</span>
+                                <div className="flex-1">
+                                  <Progress value={(stat.tasks / 15) * 100} className="h-2" />
+                                </div>
+                                <span className="text-sm font-medium w-8">{stat.tasks}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
 
-                      {/* Monthly Hours */}
-                      <div>
-                        <p className="text-sm font-medium mb-4">Hours Contributed</p>
-                        <div className="space-y-3">
-                          {volunteer.monthlyStats.map(stat => (
-                            <div key={stat.month} className="flex items-center gap-3">
-                              <span className="text-sm text-muted-foreground w-10">{stat.month}</span>
-                              <div className="flex-1">
-                                <Progress value={(stat.hours / 60) * 100} className="h-2" />
+                        {/* Monthly Hours */}
+                        <div>
+                          <p className="text-sm font-medium mb-4">Hours Contributed</p>
+                          <div className="space-y-3">
+                            {volunteer.monthlyStats.map(stat => (
+                              <div key={stat.month} className="flex items-center gap-3">
+                                <span className="text-sm text-muted-foreground w-10">{stat.month}</span>
+                                <div className="flex-1">
+                                  <Progress value={(stat.hours / 60) * 100} className="h-2" />
+                                </div>
+                                <span className="text-sm font-medium w-10">{stat.hours}h</span>
                               </div>
-                              <span className="text-sm font-medium w-10">{stat.hours}h</span>
-                            </div>
-                          ))}
+                            ))}
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    )}
                   </CardContent>
                 </Card>
               </div>
@@ -579,39 +620,46 @@ export default function VolunteerProfilePage({ params }: { params: Promise<{ id:
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
-                    {volunteer.taskHistory.map(task => {
-                      const status = statusConfig[task.status]
-                      return (
-                        <div 
-                          key={task.id}
-                          className="flex items-center gap-4 p-3 rounded-lg border border-border hover:bg-muted/50 transition-colors"
-                        >
-                          <div className="flex-1 min-w-0">
-                            <p className="font-medium text-foreground truncate">{task.title}</p>
-                            <p className="text-sm text-muted-foreground">
-                              {new Date(task.date).toLocaleDateString('en-IN', { 
-                                day: 'numeric', 
-                                month: 'short', 
-                                year: 'numeric' 
-                              })}
-                            </p>
+                  {volunteer.taskHistory.length === 0 ? (
+                    <div className="text-center py-8">
+                      <Clock className="h-12 w-12 text-muted-foreground mx-auto mb-3 opacity-50" />
+                      <p className="text-muted-foreground">No task history yet</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {volunteer.taskHistory.map(task => {
+                        const status = statusConfig[task.status]
+                        return (
+                          <div 
+                            key={task.id}
+                            className="flex items-center gap-4 p-3 rounded-lg border border-border hover:bg-muted/50 transition-colors"
+                          >
+                            <div className="flex-1 min-w-0">
+                              <p className="font-medium text-foreground truncate">{task.title}</p>
+                              <p className="text-sm text-muted-foreground">
+                                {new Date(task.date).toLocaleDateString('en-IN', { 
+                                  day: 'numeric', 
+                                  month: 'short', 
+                                  year: 'numeric' 
+                                })}
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              {task.rating && (
+                                <div className="flex items-center gap-1 text-sm">
+                                  <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                                  {task.rating}
+                                </div>
+                              )}
+                              <Badge variant="outline" className={status.className}>
+                                {status.label}
+                              </Badge>
+                            </div>
                           </div>
-                          <div className="flex items-center gap-3">
-                            {task.rating && (
-                              <div className="flex items-center gap-1 text-sm">
-                                <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
-                                {task.rating}
-                              </div>
-                            )}
-                            <Badge variant="outline" className={status.className}>
-                              {status.label}
-                            </Badge>
-                          </div>
-                        </div>
-                      )
-                    })}
-                  </div>
+                        )
+                      })}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
@@ -625,28 +673,35 @@ export default function VolunteerProfilePage({ params }: { params: Promise<{ id:
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                    {volunteer.badges.map(badge => (
-                      <div 
-                        key={badge.name}
-                        className="flex items-start gap-3 p-4 rounded-lg border border-border bg-muted/30"
-                      >
-                        <div className="h-12 w-12 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
-                          <Award className="h-6 w-6 text-accent" />
+                  {volunteer.badges.length === 0 ? (
+                    <div className="text-center py-8">
+                      <Award className="h-12 w-12 text-muted-foreground mx-auto mb-3 opacity-50" />
+                      <p className="text-muted-foreground">No badges earned yet</p>
+                    </div>
+                  ) : (
+                    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                      {volunteer.badges.map(badge => (
+                        <div 
+                          key={badge.name}
+                          className="flex items-start gap-3 p-4 rounded-lg border border-border bg-muted/30"
+                        >
+                          <div className="h-12 w-12 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
+                            <Award className="h-6 w-6 text-accent" />
+                          </div>
+                          <div>
+                            <p className="font-medium text-foreground">{badge.name}</p>
+                            <p className="text-sm text-muted-foreground">{badge.description}</p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Earned {new Date(badge.earnedDate).toLocaleDateString('en-IN', { 
+                                month: 'short', 
+                                year: 'numeric' 
+                              })}
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-medium text-foreground">{badge.name}</p>
-                          <p className="text-sm text-muted-foreground">{badge.description}</p>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            Earned {new Date(badge.earnedDate).toLocaleDateString('en-IN', { 
-                              month: 'short', 
-                              year: 'numeric' 
-                            })}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
