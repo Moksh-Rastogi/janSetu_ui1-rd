@@ -43,7 +43,7 @@ export interface Task {
   category: string
 }
 
-const MOCK_VOLUNTEERS: Volunteer[] = [
+export const MOCK_VOLUNTEERS: Volunteer[] = [
   {
     id: 'v1',
     name: 'Raj Patel',

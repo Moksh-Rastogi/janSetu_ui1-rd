@@ -26,6 +26,7 @@ import {
   BarChart3
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { MOCK_VOLUNTEERS } from '../page'
 
 interface Volunteer {
   id: string
@@ -74,42 +75,254 @@ interface Task {
   }[]
 }
 
-const MOCK_VOLUNTEER: Volunteer = {
-  id: 'v1',
-  name: 'Raj Patel',
-  email: 'raj.patel@example.com',
-  phone: '+91 98765 43210',
-  skills: ['Medical', 'First Aid', 'Emergency Response', 'Counseling', 'Logistics'],
-  availability: 'available',
-  rating: 4.9,
-  reliabilityScore: 98,
-  completedTasks: 87,
-  points: 4250,
-  badges: [
-    { name: 'First Responder', description: 'Completed 10 emergency tasks', earnedDate: '2023-06-15' },
-    { name: 'Top Contributor', description: 'In top 10% of volunteers', earnedDate: '2023-08-20' },
-    { name: 'Medical Expert', description: 'Completed 20 medical tasks', earnedDate: '2023-10-05' },
-    { name: 'Mentor', description: 'Trained 5 new volunteers', earnedDate: '2023-12-01' },
-    { name: 'Night Owl', description: 'Completed 10 night-shift tasks', earnedDate: '2024-01-10' },
-  ],
-  joinedDate: '2023-03-15',
-  location: 'Delhi, India',
-  ngoAssociations: ['Red Cross', 'NDRF', 'Goonj'],
-  taskHistory: [
-    { id: 't1', title: 'Emergency Medical Support - Sector 12', status: 'completed', date: '2024-01-14', rating: 5 },
-    { id: 't2', title: 'Relief Distribution Drive', status: 'completed', date: '2024-01-12', rating: 5 },
-    { id: 't3', title: 'First Aid Training Session', status: 'completed', date: '2024-01-10', rating: 4 },
-    { id: 't4', title: 'Flood Relief Coordination', status: 'in-progress', date: '2024-01-15' },
-    { id: 't5', title: 'Health Camp Organization', status: 'completed', date: '2024-01-08', rating: 5 },
-    { id: 't6', title: 'Volunteer Orientation', status: 'completed', date: '2024-01-05', rating: 4 },
-    { id: 't7', title: 'Supply Chain Management', status: 'cancelled', date: '2024-01-03' },
-  ],
-  monthlyStats: [
-    { month: 'Oct', tasks: 8, hours: 32 },
-    { month: 'Nov', tasks: 12, hours: 48 },
-    { month: 'Dec', tasks: 15, hours: 60 },
-    { month: 'Jan', tasks: 10, hours: 40 },
-  ],
+// Enhanced volunteer profiles with contact info and history
+const ENHANCED_VOLUNTEER_PROFILES: Record<string, Volunteer> = {
+  v1: {
+    id: 'v1',
+    name: 'Raj Patel',
+    email: 'raj.patel@example.com',
+    phone: '+91 98765 43210',
+    skills: ['Medical', 'First Aid', 'Emergency Response', 'Counseling', 'Logistics'],
+    availability: 'available',
+    rating: 4.9,
+    reliabilityScore: 98,
+    completedTasks: 87,
+    points: 4250,
+    badges: [
+      { name: 'First Responder', description: 'Completed 10 emergency tasks', earnedDate: '2023-06-15' },
+      { name: 'Top Contributor', description: 'In top 10% of volunteers', earnedDate: '2023-08-20' },
+      { name: 'Medical Expert', description: 'Completed 20 medical tasks', earnedDate: '2023-10-05' },
+      { name: 'Mentor', description: 'Trained 5 new volunteers', earnedDate: '2023-12-01' },
+      { name: 'Night Owl', description: 'Completed 10 night-shift tasks', earnedDate: '2024-01-10' },
+    ],
+    joinedDate: '2023-03-15',
+    location: 'Delhi, India',
+    ngoAssociations: ['Red Cross', 'NDRF', 'Goonj'],
+    taskHistory: [
+      { id: 't1', title: 'Emergency Medical Support - Sector 12', status: 'completed', date: '2024-01-14', rating: 5 },
+      { id: 't2', title: 'Relief Distribution Drive', status: 'completed', date: '2024-01-12', rating: 5 },
+      { id: 't3', title: 'First Aid Training Session', status: 'completed', date: '2024-01-10', rating: 4 },
+      { id: 't4', title: 'Flood Relief Coordination', status: 'in-progress', date: '2024-01-15' },
+      { id: 't5', title: 'Health Camp Organization', status: 'completed', date: '2024-01-08', rating: 5 },
+      { id: 't6', title: 'Volunteer Orientation', status: 'completed', date: '2024-01-05', rating: 4 },
+      { id: 't7', title: 'Supply Chain Management', status: 'cancelled', date: '2024-01-03' },
+    ],
+    monthlyStats: [
+      { month: 'Oct', tasks: 8, hours: 32 },
+      { month: 'Nov', tasks: 12, hours: 48 },
+      { month: 'Dec', tasks: 15, hours: 60 },
+      { month: 'Jan', tasks: 10, hours: 40 },
+    ],
+  },
+  v2: {
+    id: 'v2',
+    name: 'Priya Singh',
+    email: 'priya.singh@example.com',
+    phone: '+91 97654 32109',
+    skills: ['Relief Distribution', 'Logistics', 'Coordination'],
+    availability: 'available',
+    rating: 4.8,
+    reliabilityScore: 95,
+    completedTasks: 62,
+    points: 3180,
+    badges: [
+      { name: 'Logistics Star', description: 'Completed 30 logistics tasks', earnedDate: '2023-08-10' },
+      { name: 'Team Player', description: 'Coordinated 10 team activities', earnedDate: '2023-09-15' },
+    ],
+    joinedDate: '2023-05-20',
+    location: 'Noida, India',
+    ngoAssociations: ['Goonj', 'CRY'],
+    taskHistory: [
+      { id: 't8', title: 'Food Distribution - North Delhi', status: 'completed', date: '2024-01-10', rating: 5 },
+      { id: 't9', title: 'Supply Chain Coordination', status: 'completed', date: '2024-01-05', rating: 4 },
+      { id: 't10', title: 'Relief Supplies Sorting', status: 'in-progress', date: '2024-01-15' },
+    ],
+    monthlyStats: [
+      { month: 'Oct', tasks: 6, hours: 24 },
+      { month: 'Nov', tasks: 9, hours: 36 },
+      { month: 'Dec', tasks: 10, hours: 40 },
+      { month: 'Jan', tasks: 8, hours: 32 },
+    ],
+  },
+  v3: {
+    id: 'v3',
+    name: 'Dr. Amit Kumar',
+    email: 'amit.kumar@example.com',
+    phone: '+91 96543 21098',
+    skills: ['Medical', 'Surgery', 'Health Camps'],
+    availability: 'busy',
+    rating: 5.0,
+    reliabilityScore: 100,
+    completedTasks: 120,
+    points: 6500,
+    badges: [
+      { name: 'Medical Expert', description: 'Completed 50 medical tasks', earnedDate: '2023-06-01' },
+      { name: 'Life Saver', description: 'Saved 5 lives', earnedDate: '2023-09-20' },
+      { name: 'Mentor', description: 'Trained 10 volunteers', earnedDate: '2024-01-01' },
+      { name: 'Top Contributor', description: 'In top 1% of volunteers', earnedDate: '2024-01-10' },
+    ],
+    joinedDate: '2022-11-10',
+    location: 'Gurgaon, India',
+    ngoAssociations: ['Mercy Corps', 'WHO India'],
+    taskHistory: [
+      { id: 't11', title: 'Emergency Surgery Camp', status: 'completed', date: '2024-01-12', rating: 5 },
+      { id: 't12', title: 'Health Camp - West Delhi', status: 'completed', date: '2024-01-08', rating: 5 },
+      { id: 't13', title: 'Medical Training Workshop', status: 'in-progress', date: '2024-01-15' },
+    ],
+    monthlyStats: [
+      { month: 'Oct', tasks: 14, hours: 56 },
+      { month: 'Nov', tasks: 16, hours: 64 },
+      { month: 'Dec', tasks: 18, hours: 72 },
+      { month: 'Jan', tasks: 12, hours: 48 },
+    ],
+  },
+  v4: {
+    id: 'v4',
+    name: 'Sneha Gupta',
+    email: 'sneha.gupta@example.com',
+    phone: '+91 95432 10987',
+    skills: ['Training', 'Communication', 'Social Media'],
+    availability: 'available',
+    rating: 4.7,
+    reliabilityScore: 92,
+    completedTasks: 45,
+    points: 2100,
+    badges: [
+      { name: 'Trainer', description: 'Trained 20 volunteers', earnedDate: '2023-10-15' },
+      { name: 'Communicator', description: 'Great communication skills', earnedDate: '2023-11-20' },
+    ],
+    joinedDate: '2023-07-01',
+    location: 'Delhi, India',
+    ngoAssociations: ['Teach for India'],
+    taskHistory: [
+      { id: 't14', title: 'Volunteer Orientation Session', status: 'completed', date: '2024-01-10', rating: 4 },
+      { id: 't15', title: 'Social Media Campaign', status: 'completed', date: '2024-01-05', rating: 4 },
+    ],
+    monthlyStats: [
+      { month: 'Oct', tasks: 4, hours: 16 },
+      { month: 'Nov', tasks: 5, hours: 20 },
+      { month: 'Dec', tasks: 6, hours: 24 },
+      { month: 'Jan', tasks: 5, hours: 20 },
+    ],
+  },
+  v5: {
+    id: 'v5',
+    name: 'Vikram Sharma',
+    email: 'vikram.sharma@example.com',
+    phone: '+91 94321 09876',
+    skills: ['Survey', 'Documentation', 'Data Analysis'],
+    availability: 'offline',
+    rating: 4.5,
+    reliabilityScore: 88,
+    completedTasks: 38,
+    points: 1850,
+    badges: [
+      { name: 'Data Wizard', description: 'Expert in data analysis', earnedDate: '2023-09-10' },
+      { name: 'Surveyor', description: 'Completed 20 surveys', earnedDate: '2023-10-25' },
+    ],
+    joinedDate: '2023-08-15',
+    location: 'Faridabad, India',
+    ngoAssociations: ['CARE India'],
+    taskHistory: [
+      { id: 't16', title: 'Damage Assessment Survey', status: 'completed', date: '2024-01-08', rating: 4 },
+      { id: 't17', title: 'Data Analysis Report', status: 'completed', date: '2024-01-03', rating: 4 },
+    ],
+    monthlyStats: [
+      { month: 'Oct', tasks: 3, hours: 12 },
+      { month: 'Nov', tasks: 4, hours: 16 },
+      { month: 'Dec', tasks: 5, hours: 20 },
+      { month: 'Jan', tasks: 3, hours: 12 },
+    ],
+  },
+  v6: {
+    id: 'v6',
+    name: 'Anita Rao',
+    email: 'anita.rao@example.com',
+    phone: '+91 93210 98765',
+    skills: ['Shelter Management', 'Food Distribution'],
+    availability: 'available',
+    rating: 4.6,
+    reliabilityScore: 90,
+    completedTasks: 55,
+    points: 2750,
+    badges: [
+      { name: 'Shelter Expert', description: 'Managed 15 shelters', earnedDate: '2023-08-20' },
+      { name: 'Food Angel', description: 'Distributed food to 1000+ people', earnedDate: '2023-11-10' },
+    ],
+    joinedDate: '2023-04-22',
+    location: 'Ghaziabad, India',
+    ngoAssociations: ['Akshaya Patra', 'NDRF'],
+    taskHistory: [
+      { id: 't18', title: 'Emergency Shelter Setup', status: 'completed', date: '2024-01-12', rating: 5 },
+      { id: 't19', title: 'Food Distribution Drive', status: 'completed', date: '2024-01-08', rating: 5 },
+    ],
+    monthlyStats: [
+      { month: 'Oct', tasks: 5, hours: 20 },
+      { month: 'Nov', tasks: 7, hours: 28 },
+      { month: 'Dec', tasks: 8, hours: 32 },
+      { month: 'Jan', tasks: 6, hours: 24 },
+    ],
+  },
+  v7: {
+    id: 'v7',
+    name: 'Rahul Verma',
+    email: 'rahul.verma@example.com',
+    phone: '+91 92109 87654',
+    skills: ['Construction', 'Infrastructure', 'Heavy Machinery'],
+    availability: 'available',
+    rating: 4.4,
+    reliabilityScore: 85,
+    completedTasks: 32,
+    points: 1600,
+    badges: [
+      { name: 'Builder', description: 'Completed 15 construction projects', earnedDate: '2023-10-01' },
+      { name: 'Infrastructure Pro', description: 'Expert in infrastructure', earnedDate: '2023-11-15' },
+    ],
+    joinedDate: '2023-09-01',
+    location: 'Delhi, India',
+    ngoAssociations: ['Habitat for Humanity'],
+    taskHistory: [
+      { id: 't20', title: 'Shelter Construction', status: 'completed', date: '2024-01-10', rating: 4 },
+      { id: 't21', title: 'Infrastructure Repair', status: 'completed', date: '2024-01-05', rating: 4 },
+    ],
+    monthlyStats: [
+      { month: 'Oct', tasks: 3, hours: 12 },
+      { month: 'Nov', tasks: 4, hours: 16 },
+      { month: 'Dec', tasks: 5, hours: 20 },
+      { month: 'Jan', tasks: 3, hours: 12 },
+    ],
+  },
+  v8: {
+    id: 'v8',
+    name: 'Meera Joshi',
+    email: 'meera.joshi@example.com',
+    phone: '+91 91098 76543',
+    skills: ['Counseling', 'Mental Health', 'Child Care'],
+    availability: 'busy',
+    rating: 4.8,
+    reliabilityScore: 94,
+    completedTasks: 68,
+    points: 3400,
+    badges: [
+      { name: 'Mental Health Advocate', description: 'Counseled 50+ individuals', earnedDate: '2023-07-20' },
+      { name: 'Child Protector', description: 'Protected 20+ children', earnedDate: '2023-09-10' },
+      { name: 'Counselor', description: 'Expert counselor', earnedDate: '2023-10-01' },
+    ],
+    joinedDate: '2023-02-10',
+    location: 'Noida, India',
+    ngoAssociations: ['Childline', 'iCall'],
+    taskHistory: [
+      { id: 't22', title: 'Mental Health Awareness Session', status: 'completed', date: '2024-01-10', rating: 5 },
+      { id: 't23', title: 'Child Protection Workshop', status: 'completed', date: '2024-01-05', rating: 5 },
+      { id: 't24', title: 'Counseling Session', status: 'in-progress', date: '2024-01-15' },
+    ],
+    monthlyStats: [
+      { month: 'Oct', tasks: 7, hours: 28 },
+      { month: 'Nov', tasks: 8, hours: 32 },
+      { month: 'Dec', tasks: 9, hours: 36 },
+      { month: 'Jan', tasks: 7, hours: 28 },
+    ],
+  },
 }
 
 const MOCK_TASKS: Task[] = [
@@ -203,8 +416,8 @@ export default function VolunteerProfilePage({ params }: { params: Promise<{ id:
   const { id } = use(params)
   const [assignTaskOpen, setAssignTaskOpen] = useState(false)
   
-  // In a real app, fetch volunteer data based on id
-  const volunteer = MOCK_VOLUNTEER
+  // Fetch volunteer data based on id from URL
+  const volunteer = ENHANCED_VOLUNTEER_PROFILES[id] || ENHANCED_VOLUNTEER_PROFILES['v1']
   
   // Calculate availability based on assigned tasks
   const volunteerAssignedInProgressTasks = MOCK_TASKS.filter(
