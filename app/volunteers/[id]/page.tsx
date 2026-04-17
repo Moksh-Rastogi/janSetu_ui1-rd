@@ -205,7 +205,22 @@ export default function VolunteerProfilePage({ params }: { params: Promise<{ id:
   
   // In a real app, fetch volunteer data based on id
   const volunteer = MOCK_VOLUNTEER
-  const availability = availabilityConfig[volunteer.availability]
+  
+  // Calculate availability based on assigned tasks
+  const volunteerAssignedInProgressTasks = MOCK_TASKS.filter(
+    task => task.status === 'in-progress' && 
+             task.assignedVolunteers.some(v => v.id === volunteer.id)
+  )
+  
+  const volunteerAssignedToDoTasks = MOCK_TASKS.filter(
+    task => task.status === 'todo' && 
+            task.assignedVolunteers.some(v => v.id === volunteer.id)
+  )
+  
+  // Determine current availability status
+  const hasAssignedTasks = volunteerAssignedInProgressTasks.length > 0 || volunteerAssignedToDoTasks.length > 0
+  const currentAvailability = hasAssignedTasks ? 'busy' : volunteer.availability
+  const availability = availabilityConfig[currentAvailability]
 
   const handleAssignTask = (volunteerId: string, taskId: string) => {
     // In a real app, this would make an API call to assign the task
@@ -509,6 +524,7 @@ export default function VolunteerProfilePage({ params }: { params: Promise<{ id:
           availability: volunteer.availability,
         }}
         tasks={MOCK_TASKS}
+        allTasks={MOCK_TASKS}
         onAssign={handleAssignTask}
       />
     </AppLayout>

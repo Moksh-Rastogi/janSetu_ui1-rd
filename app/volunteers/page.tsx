@@ -26,6 +26,23 @@ export interface Volunteer {
   ngoAssociations: string[]
 }
 
+export interface Task {
+  id: string
+  title: string
+  description: string
+  priority: 'critical' | 'high' | 'medium' | 'low'
+  location: string
+  status: 'todo' | 'in-progress' | 'completed'
+  assignedVolunteers: {
+    id: string
+    name: string
+    avatar?: string
+  }[]
+  aiAssigned: boolean
+  dueDate: string
+  category: string
+}
+
 const MOCK_VOLUNTEERS: Volunteer[] = [
   {
     id: 'v1',
@@ -141,6 +158,78 @@ const MOCK_VOLUNTEERS: Volunteer[] = [
   },
 ]
 
+const MOCK_TASKS: Task[] = [
+  {
+    id: '1',
+    title: 'Distribute Relief Supplies',
+    description: 'Distribute food and water packets to affected families in Sector 12',
+    priority: 'critical',
+    location: 'Sector 12, Delhi',
+    status: 'todo',
+    assignedVolunteers: [
+      { id: 'v1', name: 'Raj Patel' },
+      { id: 'v2', name: 'Priya Singh' },
+    ],
+    aiAssigned: true,
+    dueDate: '2024-01-15',
+    category: 'Relief',
+  },
+  {
+    id: '2',
+    title: 'Medical Camp Setup',
+    description: 'Set up medical camp for health checkups and first aid',
+    priority: 'high',
+    location: 'Community Hall, Noida',
+    status: 'todo',
+    assignedVolunteers: [{ id: 'v3', name: 'Dr. Amit Kumar' }],
+    aiAssigned: false,
+    dueDate: '2024-01-16',
+    category: 'Medical',
+  },
+  {
+    id: '3',
+    title: 'Volunteer Training Session',
+    description: 'Conduct training for new volunteers on emergency protocols',
+    priority: 'medium',
+    location: 'NGO Office, Gurgaon',
+    status: 'in-progress',
+    assignedVolunteers: [{ id: 'v4', name: 'Sneha Gupta' }],
+    aiAssigned: true,
+    dueDate: '2024-01-14',
+    category: 'Training',
+  },
+  {
+    id: '4',
+    title: 'Damage Assessment Survey',
+    description: 'Survey flood-affected areas and document damage for relief planning',
+    priority: 'high',
+    location: 'Multiple Districts',
+    status: 'in-progress',
+    assignedVolunteers: [
+      { id: 'v5', name: 'Vikram Sharma' },
+      { id: 'v6', name: 'Anita Rao' },
+    ],
+    aiAssigned: false,
+    dueDate: '2024-01-17',
+    category: 'Survey',
+  },
+  {
+    id: '5',
+    title: 'Shelter Setup Complete',
+    description: 'Emergency shelter setup for displaced families',
+    priority: 'critical',
+    location: 'Stadium Ground, Delhi',
+    status: 'completed',
+    assignedVolunteers: [
+      { id: 'v7', name: 'Rahul Verma' },
+      { id: 'v8', name: 'Meera Joshi' },
+    ],
+    aiAssigned: true,
+    dueDate: '2024-01-12',
+    category: 'Shelter',
+  },
+]
+
 export default function VolunteersPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [activeTab, setActiveTab] = useState('volunteers')
@@ -197,7 +286,7 @@ export default function VolunteersPage() {
             </TabsList>
 
             <TabsContent value="volunteers" className="mt-6">
-              <VolunteerGrid volunteers={filteredVolunteers} />
+              <VolunteerGrid volunteers={filteredVolunteers} tasks={MOCK_TASKS} />
             </TabsContent>
 
             <TabsContent value="leaderboard" className="mt-6">

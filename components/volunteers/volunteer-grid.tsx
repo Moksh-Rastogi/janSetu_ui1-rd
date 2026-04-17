@@ -16,8 +16,19 @@ import {
 import { cn } from '@/lib/utils'
 import type { Volunteer } from '@/app/volunteers/page'
 
+interface Task {
+  id: string
+  status: 'todo' | 'in-progress' | 'completed'
+  assignedVolunteers: {
+    id: string
+    name: string
+    avatar?: string
+  }[]
+}
+
 interface VolunteerGridProps {
   volunteers: Volunteer[]
+  tasks?: Task[]
 }
 
 const availabilityConfig = {
@@ -26,11 +37,11 @@ const availabilityConfig = {
   offline: { label: 'Offline', className: 'bg-gray-400' },
 }
 
-export function VolunteerGrid({ volunteers }: VolunteerGridProps) {
+export function VolunteerGrid({ volunteers, tasks = [] }: VolunteerGridProps) {
   return (
     <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {volunteers.map(volunteer => (
-        <VolunteerCard key={volunteer.id} volunteer={volunteer} />
+        <VolunteerCard key={volunteer.id} volunteer={volunteer} tasks={tasks} />
       ))}
 
       {volunteers.length === 0 && (
@@ -44,10 +55,24 @@ export function VolunteerGrid({ volunteers }: VolunteerGridProps) {
 
 interface VolunteerCardProps {
   volunteer: Volunteer
+  tasks: Task[]
 }
 
-function VolunteerCard({ volunteer }: VolunteerCardProps) {
-  const availability = availabilityConfig[volunteer.availability]
+function VolunteerCard({ volunteer, tasks }: VolunteerCardProps) {
+  // Calculate availability based on assigned tasks
+  const volunteerAssignedInProgressTasks = tasks.filter(
+    task => task.status === 'in-progress' && 
+            task.assignedVolunteers.some(v => v.id === volunteer.id)
+  )
+  
+  const volunteerAssignedToDoTasks = tasks.filter(
+    task => task.status === 'todo' && 
+            task.assignedVolunteers.some(v => v.id === volunteer.id)
+  )
+  
+  const hasAssignedTasks = volunteerAssignedInProgressTasks.length > 0 || volunteerAssignedToDoTasks.length > 0
+  const currentAvailability = hasAssignedTasks ? 'busy' : volunteer.availability
+  const availability = availabilityConfig[currentAvailability]
   
   return (
     <Card className="hover:shadow-lg transition-all group">

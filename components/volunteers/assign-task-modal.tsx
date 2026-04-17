@@ -58,6 +58,7 @@ interface AssignTaskModalProps {
   volunteer: Volunteer
   tasks: Task[]
   onAssign: (volunteerId: string, taskId: string) => void
+  allTasks?: Task[]
 }
 
 const priorityConfig = {
@@ -73,8 +74,23 @@ export function AssignTaskModal({
   volunteer,
   tasks,
   onAssign,
+  allTasks = [],
 }: AssignTaskModalProps) {
   const [search, setSearch] = useState('')
+
+  // Check if volunteer has any in-progress or to-do tasks
+  const volunteerAssignedInProgressTasks = allTasks.filter(
+    task => task.status === 'in-progress' && 
+             task.assignedVolunteers.some(v => v.id === volunteer.id)
+  )
+  
+  const volunteerAssignedToDoTasks = allTasks.filter(
+    task => task.status === 'todo' && 
+            task.assignedVolunteers.some(v => v.id === volunteer.id)
+  )
+  
+  const volunteerBusyCount = volunteerAssignedInProgressTasks.length + volunteerAssignedToDoTasks.length
+  const isVolunteerBusy = volunteerBusyCount > 0
 
   // Filter tasks by volunteer skills
   const relevantTasks = tasks.filter(task => {
@@ -105,7 +121,14 @@ export function AssignTaskModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl max-h-[80vh] overflow-hidden flex flex-col">
         <DialogHeader>
-          <DialogTitle>Assign Tasks to {volunteer.name}</DialogTitle>
+          <div className="flex items-center justify-between gap-2">
+            <DialogTitle>Assign Tasks to {volunteer.name}</DialogTitle>
+            {isVolunteerBusy && (
+              <Badge className="bg-yellow-500/20 text-yellow-700 border-yellow-500/30">
+                Currently assigned to {volunteerBusyCount} task{volunteerBusyCount > 1 ? 's' : ''}
+              </Badge>
+            )}
+          </div>
           <DialogDescription>
             Showing tasks related to {volunteer.skills.slice(0, 2).join(', ')}
             {volunteer.skills.length > 2 && ` and ${volunteer.skills.length - 2} more skills`}
