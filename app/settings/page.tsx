@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { AppLayout } from '@/components/layout/app-layout'
+import { useRole } from '@/components/layout/role-context'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -33,46 +34,34 @@ import {
   X,
 } from 'lucide-react'
 
-// Mock user data
-const MOCK_USER = {
-  name: 'Rahul Sharma',
-  email: 'rahul.sharma@example.com',
-  phone: '+91 98765 43210',
-  avatar: '',
-  role: 'NGO Admin',
-  trustScore: 85,
-  isVerified: true,
-  organization: {
-    name: 'Hope Foundation India',
-    type: 'Non-Profit Organization',
-    registrationNumber: 'NGO/2020/12345',
-    address: '123 Civil Lines, New Delhi, India',
-    website: 'www.hopefoundation.org',
-    verificationStatus: 'verified',
-    documentsSubmitted: 4,
-    documentsRequired: 4,
-  },
-  notifications: {
-    emailAlerts: true,
-    pushNotifications: true,
-    emergencyAlerts: true,
-    weeklyDigest: false,
-    taskReminders: true,
-  },
-  security: {
-    twoFactorEnabled: false,
-    lastPasswordChange: '2025-12-15',
-    loginHistory: [
-      { date: '2026-04-18 10:30 AM', device: 'Chrome on Windows', location: 'New Delhi, India', status: 'success' },
-      { date: '2026-04-17 09:15 AM', device: 'Safari on iPhone', location: 'New Delhi, India', status: 'success' },
-      { date: '2026-04-16 02:45 PM', device: 'Chrome on Windows', location: 'Mumbai, India', status: 'success' },
-      { date: '2026-04-15 08:00 AM', device: 'Unknown Device', location: 'Unknown', status: 'failed' },
-    ],
-  },
+// Default notification and security settings
+const DEFAULT_NOTIFICATIONS = {
+  emailAlerts: true,
+  pushNotifications: true,
+  emergencyAlerts: true,
+  weeklyDigest: false,
+  taskReminders: true,
+}
+
+const DEFAULT_SECURITY = {
+  twoFactorEnabled: false,
+  lastPasswordChange: '2025-12-15',
+  loginHistory: [
+    { date: '2026-04-18 10:30 AM', device: 'Chrome on Windows', location: 'New Delhi, India', status: 'success' },
+    { date: '2026-04-17 09:15 AM', device: 'Safari on iPhone', location: 'New Delhi, India', status: 'success' },
+    { date: '2026-04-16 02:45 PM', device: 'Chrome on Windows', location: 'Mumbai, India', status: 'success' },
+    { date: '2026-04-15 08:00 AM', device: 'Unknown Device', location: 'Unknown', status: 'failed' },
+  ],
 }
 
 export default function SettingsPage() {
-  const [user, setUser] = useState(MOCK_USER)
+  const { currentUser, currentRole } = useRole()
+  
+  const [user, setUser] = useState({
+    ...currentUser,
+    notifications: DEFAULT_NOTIFICATIONS,
+    security: DEFAULT_SECURITY,
+  })
   const [isEditing, setIsEditing] = useState(false)
   const [formData, setFormData] = useState({
     name: user.name,
@@ -83,6 +72,19 @@ export default function SettingsPage() {
     { name: string; status: 'pending' | 'verified'; file: File }[]
   >([])
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // Update user state when role changes
+  useEffect(() => {
+    setUser((prev) => ({
+      ...prev,
+      ...currentUser,
+    }))
+    setFormData({
+      name: currentUser.name,
+      email: currentUser.email,
+      phone: currentUser.phone,
+    })
+  }, [currentRole, currentUser])
 
   const handleNotificationChange = (key: keyof typeof user.notifications) => {
     setUser((prev) => ({
@@ -227,7 +229,7 @@ export default function SettingsPage() {
                     </div>
                     <div>
                       <h3 className="font-semibold text-foreground">{user.name}</h3>
-                      <p className="text-sm text-muted-foreground">{user.role}</p>
+                      <p className="text-sm text-muted-foreground">{user.roleLabel}</p>
                       <Badge variant="outline" className="mt-2">
                         Member since Jan 2024
                       </Badge>
@@ -276,7 +278,7 @@ export default function SettingsPage() {
                     </div>
                     <div className="space-y-2">
                       <Label>Role</Label>
-                      <Input value={user.role} disabled />
+                      <Input value={user.roleLabel} disabled />
                     </div>
                   </div>
 
