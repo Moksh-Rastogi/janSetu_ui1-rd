@@ -100,7 +100,7 @@ export default function DashboardPage() {
         <div className="space-y-6 max-w-7xl mx-auto">
         {/* Page Header */}
         <div>
-          <h1 className="text-3xl font-bold text-foreground text-pretty">Dashboard</h1>
+          <h1 className="text-3xl font-bold text-foreground text-pretty">John Doe</h1>
           <p className="text-muted-foreground mt-1">
             Welcome back! Here&apos;s your ecosystem overview.
           </p>

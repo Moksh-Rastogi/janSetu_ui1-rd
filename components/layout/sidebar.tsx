@@ -14,12 +14,8 @@ import {
   BarChart3,
   MessageSquare,
   Settings,
-  ChevronDown,
-  Menu,
 } from 'lucide-react'
-import { useState } from 'react'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
 
 const MENU_ITEMS = [
   {
@@ -29,8 +25,8 @@ const MENU_ITEMS = [
   },
   {
     icon: Map,
-    label: 'Map',
-    href: '/map',
+    label: 'Crisis Map',
+    href: '/crisis-map',
   },
   {
     icon: Zap,
@@ -79,9 +75,13 @@ const MENU_ITEMS = [
   },
 ]
 
-export function Sidebar() {
+interface SidebarProps {
+  isOpen: boolean
+  onClose: () => void
+}
+
+export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname()
-  const [isOpen, setIsOpen] = useState(false)
 
   const isActive = (href: string) => {
     return pathname === href || pathname.startsWith(href + '/')
@@ -89,29 +89,25 @@ export function Sidebar() {
 
   return (
     <>
-      {/* Mobile Menu Button */}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="fixed left-4 top-5 z-50 lg:hidden"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <Menu className="h-5 w-5" />
-      </Button>
-
-      {/* Mobile Overlay */}
+      {/* Mobile Overlay - Only visible on mobile when sidebar is open */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
-          onClick={() => setIsOpen(false)}
+          className="fixed inset-0 z-30 bg-black/50 md:hidden"
+          onClick={onClose}
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar - Width-based push layout on desktop, overlay on mobile */}
       <aside
         className={cn(
-          'fixed left-0 top-16 z-40 flex h-[calc(100vh-64px)] w-64 flex-col border-r border-border bg-background transition-all duration-300 lg:sticky lg:top-16 lg:h-[calc(100vh-64px)]',
-          isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+          'flex flex-col border-r border-border bg-background transition-all duration-300 ease-in-out',
+          'h-[calc(100vh-64px)]',
+          // Desktop: relative positioning for width-based push layout
+          'md:relative',
+          // Mobile: fixed overlay
+          'fixed left-0 top-16 z-40',
+          // Dynamic width based on open state
+          isOpen ? 'w-64 md:w-64' : 'w-0 md:w-64'
         )}
       >
         {/* Navigation */}
@@ -130,10 +126,10 @@ export function Sidebar() {
                       ? 'bg-primary text-primary-foreground shadow-sm'
                       : 'text-foreground hover:bg-muted'
                   )}
-                  onClick={() => setIsOpen(false)}
+                  onClick={onClose}
                 >
                   <Icon className="h-5 w-5 flex-shrink-0" />
-                  <span>{item.label}</span>
+                  <span className="md:block hidden">{item.label}</span>
                 </Link>
               )
             })}
@@ -142,7 +138,7 @@ export function Sidebar() {
 
         {/* Footer */}
         <div className="border-t border-border px-4 py-4">
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-muted-foreground hidden md:block">
             JanSetu v1.0 | Smart NGO Ecosystem
           </p>
         </div>
