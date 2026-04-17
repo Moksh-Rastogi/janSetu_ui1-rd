@@ -169,11 +169,8 @@ export function NGODetailPanel({ ngo, onClose }: NGODetailProps) {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-3 pt-4 border-t">
-            <Button variant="outline" className="flex-1">
-              View Full Profile
-            </Button>
-            <Button className="flex-1">Request Collaboration</Button>
+          <div className="pt-4 border-t">
+            <Button className="w-full">Request Collaboration</Button>
           </div>
         </CardContent>
       </Card>
