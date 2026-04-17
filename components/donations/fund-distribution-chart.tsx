@@ -57,20 +57,14 @@ export function FundDistributionChart({
       const percentage = ((item.value / total) * 100).toFixed(1)
       const color = item.payload.color
       return (
-        <div className="bg-popover/95 backdrop-blur-sm border-2 rounded-xl shadow-2xl p-4 min-w-[180px]" style={{ borderColor: color }}>
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-4 h-4 rounded-full shadow-md" style={{ backgroundColor: color }} />
-            <p className="font-bold text-foreground text-base">{item.name}</p>
+        <div className="bg-popover/95 backdrop-blur-sm border rounded-lg shadow-lg px-3 py-2" style={{ borderColor: color }}>
+          <div className="flex items-center gap-1.5 mb-1">
+            <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color }} />
+            <p className="font-semibold text-foreground text-sm">{item.name}</p>
           </div>
-          <div className="space-y-1 pl-6">
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Amount:</span>
-              <span className="font-bold text-lg" style={{ color }}>{formatCurrency(item.value)}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Share:</span>
-              <span className="font-semibold text-foreground px-2 py-0.5 rounded-full text-sm" style={{ backgroundColor: `${color}20` }}>{percentage}%</span>
-            </div>
+          <div className="flex items-center gap-2 text-xs">
+            <span className="font-bold" style={{ color }}>{formatCurrency(item.value)}</span>
+            <span className="text-muted-foreground">({percentage}%)</span>
           </div>
         </div>
       )

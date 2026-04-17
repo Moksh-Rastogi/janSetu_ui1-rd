@@ -35,22 +35,16 @@ export function TrendAnalysisChart({
   const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: Array<{ name: string; value: number; color: string; dataKey: string }>; label?: string }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-popover/95 backdrop-blur-sm border border-border rounded-xl shadow-2xl p-4 min-w-[200px]">
-          <div className="flex items-center gap-2 mb-3 pb-2 border-b border-border">
-            <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            <p className="font-bold text-foreground text-base">{label}</p>
-          </div>
-          <div className="space-y-2">
+        <div className="bg-popover/95 backdrop-blur-sm border border-border rounded-lg shadow-lg px-3 py-2">
+          <p className="font-semibold text-foreground text-xs mb-1.5 pb-1 border-b border-border">{label}</p>
+          <div className="space-y-1">
             {payload.map((entry, index) => (
-              <div key={index} className="flex items-center justify-between gap-4 p-2 rounded-lg transition-colors" style={{ backgroundColor: `${entry.color}15` }}>
-                <div className="flex items-center gap-2">
-                  <div
-                    className="w-3 h-3 rounded-full shadow-sm"
-                    style={{ backgroundColor: entry.color }}
-                  />
-                  <span className="text-sm text-muted-foreground">{entry.name}</span>
+              <div key={index} className="flex items-center justify-between gap-3 text-xs">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
+                  <span className="text-muted-foreground">{entry.name}</span>
                 </div>
-                <span className="font-bold text-foreground" style={{ color: entry.color }}>
+                <span className="font-bold" style={{ color: entry.color }}>
                   {entry.dataKey === 'donations' ? formatCurrency(entry.value) : entry.value.toLocaleString()}
                 </span>
               </div>

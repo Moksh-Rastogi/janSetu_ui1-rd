@@ -40,50 +40,33 @@ export function PredictiveInsights({
       const dataPoint = data.find(d => d.month === label)
       const isPredicted = dataPoint && !dataPoint.actual
       return (
-        <div className="bg-popover/95 backdrop-blur-sm border border-border rounded-xl shadow-2xl p-4 min-w-[200px]">
-          <div className="flex items-center gap-2 mb-3 pb-2 border-b border-border">
-            <Brain className="w-4 h-4 text-primary" />
-            <p className="font-bold text-foreground">{label}</p>
+        <div className="bg-popover/95 backdrop-blur-sm border border-border rounded-lg shadow-lg px-3 py-2">
+          <div className="flex items-center gap-1.5 mb-1.5 pb-1 border-b border-border">
+            <Brain className="w-3 h-3 text-primary" />
+            <p className="font-semibold text-foreground text-xs">{label}</p>
             {isPredicted && (
-              <Badge variant="outline" className="text-xs ml-auto">Forecast</Badge>
+              <span className="text-[10px] px-1 py-0.5 bg-muted rounded ml-auto">Forecast</span>
             )}
           </div>
-          <div className="space-y-2">
+          <div className="space-y-1">
             {payload.map((entry, index) => (
-              <div 
-                key={index} 
-                className="flex items-center justify-between gap-4 p-2 rounded-lg"
-                style={{ backgroundColor: `${entry.color}15` }}
-              >
-                <div className="flex items-center gap-2">
-                  <div
-                    className="w-3 h-3 rounded-full shadow-sm"
-                    style={{ backgroundColor: entry.color }}
-                  />
-                  <span className="text-sm text-muted-foreground">
+              <div key={index} className="flex items-center justify-between gap-3 text-xs">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
+                  <span className="text-muted-foreground">
                     {entry.dataKey === 'actual' ? 'Actual' : 'Predicted'}
                   </span>
                 </div>
-                <span className="font-bold text-base" style={{ color: entry.color }}>
+                <span className="font-bold" style={{ color: entry.color }}>
                   {formatValue(entry.value)}
                 </span>
               </div>
             ))}
           </div>
           {dataPoint && isPredicted && (
-            <div className="mt-3 pt-2 border-t border-border">
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-muted-foreground">AI Confidence</span>
-                <div className="flex items-center gap-2">
-                  <div className="w-16 h-1.5 rounded-full bg-muted overflow-hidden">
-                    <div 
-                      className="h-full rounded-full bg-primary" 
-                      style={{ width: `${dataPoint.confidence}%` }}
-                    />
-                  </div>
-                  <span className="text-xs font-semibold text-primary">{dataPoint.confidence}%</span>
-                </div>
-              </div>
+            <div className="mt-1.5 pt-1 border-t border-border flex items-center justify-between text-[10px]">
+              <span className="text-muted-foreground">Confidence</span>
+              <span className="font-semibold text-primary">{dataPoint.confidence}%</span>
             </div>
           )}
         </div>
