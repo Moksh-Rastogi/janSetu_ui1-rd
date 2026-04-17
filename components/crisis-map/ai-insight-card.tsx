@@ -18,7 +18,7 @@ export function AIInsightCard({ suggestedAction, priorityScore, prediction }: AI
   return (
     <div
       className={cn(
-        'absolute bottom-4 left-4 z-30 w-80',
+        'absolute bottom-4 left-2 sm:left-4 z-30 w-[calc(100%-1rem)] sm:w-72 md:w-80',
         'bg-black/50 backdrop-blur-xl border border-white/10 rounded-xl',
         'transition-all duration-300 ease-out overflow-hidden'
       )}

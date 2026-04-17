@@ -80,11 +80,11 @@ export function MapControls({
   }
 
   return (
-    <div className="absolute top-4 left-4 right-4 z-30 flex items-center gap-3">
+    <div className="absolute top-2 sm:top-4 left-2 sm:left-4 right-2 sm:right-4 z-30 flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3">
       {/* City Selector */}
       <Select value={selectedCity} onValueChange={onCityChange}>
-        <SelectTrigger className="w-[140px] bg-white/10 backdrop-blur-md border-white/20 text-white shrink-0">
-          <SelectValue placeholder="Select City" />
+        <SelectTrigger className="w-[100px] sm:w-[140px] bg-white/10 backdrop-blur-md border-white/20 text-white shrink-0 text-xs sm:text-sm">
+          <SelectValue placeholder="City" />
         </SelectTrigger>
         <SelectContent className="bg-slate-900 border-white/20">
           {CITIES.map((city) => (
@@ -100,10 +100,10 @@ export function MapControls({
       </Select>
 
       {/* Search Input with Suggestions */}
-      <div ref={searchRef} className="relative flex-1 max-w-md">
+      <div ref={searchRef} className="relative flex-1 min-w-0 order-last sm:order-none w-full sm:w-auto sm:max-w-md">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/60 z-10" />
         <Input
-          placeholder="Search locations, issues..."
+          placeholder="Search..."
           value={searchQuery}
           onChange={(e) => {
             onSearchChange(e.target.value)
@@ -111,7 +111,7 @@ export function MapControls({
           }}
           onFocus={() => setShowSuggestions(true)}
           onKeyDown={handleKeyDown}
-          className="pl-10 pr-8 bg-white/10 backdrop-blur-md border-white/20 text-white placeholder:text-white/50 focus-visible:ring-white/30"
+          className="pl-10 pr-8 bg-white/10 backdrop-blur-md border-white/20 text-white placeholder:text-white/50 focus-visible:ring-white/30 text-sm"
         />
         {searchQuery && (
           <button
@@ -200,13 +200,13 @@ export function MapControls({
           variant="outline"
           onClick={onToggleLive}
           className={cn(
-            'h-9 px-3 bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20 hover:text-white',
+            'h-9 px-2 sm:px-3 bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20 hover:text-white',
             isLive && 'bg-red-500/20 border-red-400/40 text-red-300 hover:bg-red-500/30 hover:text-red-200'
           )}
         >
-          <span className="flex items-center gap-2">
+          <span className="flex items-center gap-1 sm:gap-2">
             <Radio className={cn('h-4 w-4 shrink-0', isLive && 'animate-pulse')} />
-            <span className="text-sm leading-none">{isLive ? 'Live' : 'Paused'}</span>
+            <span className="text-xs sm:text-sm leading-none hidden sm:inline">{isLive ? 'Live' : 'Paused'}</span>
           </span>
         </Button>
       </div>

@@ -37,7 +37,7 @@ export function ConversationList({
   )
 
   return (
-    <div className="flex h-full flex-col border-r border-border bg-card">
+    <div className="flex h-full w-full flex-col border-r border-border bg-card">
       {/* Search Header */}
       <div className="border-b border-border p-4">
         <div className="relative">

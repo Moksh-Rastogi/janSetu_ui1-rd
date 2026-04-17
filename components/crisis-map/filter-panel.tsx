@@ -90,7 +90,7 @@ export function FilterPanel({ isOpen, onClose, filters, onFiltersChange }: Filte
       {/* Panel */}
       <div
         className={cn(
-          'absolute top-16 left-4 z-40 w-80',
+          'absolute top-14 sm:top-16 left-2 sm:left-4 z-40 w-[calc(100%-1rem)] sm:w-72 md:w-80',
           'bg-black/50 backdrop-blur-xl border border-white/10 rounded-xl',
           'transform transition-all duration-300 ease-out',
           isOpen

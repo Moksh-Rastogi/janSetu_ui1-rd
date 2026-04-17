@@ -97,7 +97,7 @@ export function TaskKanbanBoard({ tasks, onTaskMove, onAssignVolunteer, onUnassi
   }
 
   return (
-    <div className="flex gap-4 h-full overflow-x-auto pb-4">
+    <div className="flex gap-3 sm:gap-4 h-full overflow-x-auto pb-4 px-1">
       {COLUMNS.map(column => {
         const columnTasks = getTasksByStatus(column.id)
         const isOver = dragOverColumn === column.id
@@ -105,7 +105,7 @@ export function TaskKanbanBoard({ tasks, onTaskMove, onAssignVolunteer, onUnassi
         return (
           <div
             key={column.id}
-            className="flex-1 min-w-[300px] max-w-[400px] flex flex-col"
+            className="flex-1 min-w-[260px] sm:min-w-[300px] max-w-[400px] flex flex-col"
             onDragOver={(e) => handleDragOver(e, column.id)}
             onDragLeave={handleDragLeave}
             onDrop={(e) => handleDrop(e, column.id)}

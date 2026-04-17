@@ -334,7 +334,10 @@ export default function MessagesPage() {
     <AppLayout>
       <div className="flex h-[calc(100vh-64px)]">
         {/* Left Panel - Conversation List */}
-        <div className="w-80 flex-shrink-0 lg:w-96">
+        <div className={`
+          ${selectedConversationId ? 'hidden md:flex' : 'flex'}
+          w-full md:w-80 lg:w-96 flex-shrink-0
+        `}>
           <ConversationList
             conversations={conversations}
             selectedId={selectedConversationId}
@@ -343,12 +346,16 @@ export default function MessagesPage() {
         </div>
 
         {/* Right Panel - Chat Window */}
-        <div className="flex-1">
+        <div className={`
+          ${selectedConversationId ? 'flex' : 'hidden md:flex'}
+          flex-1 flex-col
+        `}>
           <ChatWindow
             conversation={selectedConversation}
             messages={currentMessages}
             currentUserId="current-user"
             onSendMessage={handleSendMessage}
+            onBack={() => setSelectedConversationId(null)}
           />
         </div>
       </div>

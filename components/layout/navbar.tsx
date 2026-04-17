@@ -87,13 +87,13 @@ export function Navbar({ onMenuClick, sidebarOpen }: NavbarProps) {
         </div>
 
         {/* Center: Search */}
-        <div className="flex-1 flex justify-center px-4">
+        <div className="flex-1 flex justify-center px-2 sm:px-4">
           <div className="w-full max-w-md">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
-                placeholder="Search campaigns, tasks, NGOs, volunteers..."
-                className="pl-10 pr-8 bg-muted border-0 focus-visible:ring-1"
+                placeholder="Search..."
+                className="pl-10 pr-8 bg-muted border-0 focus-visible:ring-1 text-sm sm:text-base"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => setSearchOpen(true)}
@@ -178,7 +178,7 @@ export function Navbar({ onMenuClick, sidebarOpen }: NavbarProps) {
         </div>
 
         {/* Right: Actions */}
-        <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
+        <div className="flex items-center gap-1 sm:gap-2 md:gap-4 flex-shrink-0">
           {/* Notifications */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

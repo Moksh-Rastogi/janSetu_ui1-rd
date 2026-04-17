@@ -551,8 +551,8 @@ export function MapView() {
         onClose={() => setSelectedMarkerId(null)}
       />
 
-      {/* Legend */}
-      <div className="absolute bottom-4 right-4 z-20 bg-black/50 backdrop-blur-md border border-white/10 rounded-lg p-3">
+      {/* Legend - Hidden on mobile, visible on larger screens */}
+      <div className="absolute bottom-4 right-4 z-20 bg-black/50 backdrop-blur-md border border-white/10 rounded-lg p-2 sm:p-3 hidden sm:block">
         <p className="text-xs text-white/60 mb-2 font-medium">Issue Types</p>
         <div className="space-y-1.5">
           <div className="flex items-center gap-2">

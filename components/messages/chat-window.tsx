@@ -18,6 +18,7 @@ import {
   Check,
   CheckCheck,
   X,
+  ArrowLeft,
 } from 'lucide-react'
 import type { Conversation } from './conversation-list'
 
@@ -40,6 +41,7 @@ interface ChatWindowProps {
   messages: Message[]
   currentUserId: string
   onSendMessage: (content: string, attachment?: File) => void
+  onBack?: () => void
 }
 
 export function ChatWindow({
@@ -47,6 +49,7 @@ export function ChatWindow({
   messages,
   currentUserId,
   onSendMessage,
+  onBack,
 }: ChatWindowProps) {
   const [inputValue, setInputValue] = useState('')
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
@@ -107,8 +110,19 @@ export function ChatWindow({
   return (
     <div className="flex h-full flex-col bg-background">
       {/* Chat Header */}
-      <div className="flex items-center justify-between border-b border-border px-4 py-3">
-        <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between border-b border-border px-2 sm:px-4 py-3">
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Back Button - Mobile Only */}
+          {onBack && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-9 w-9 md:hidden flex-shrink-0"
+              onClick={onBack}
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+          )}
           <div className="relative">
             <Avatar className="h-10 w-10">
               <AvatarImage src={conversation.avatar} alt={conversation.name} />
