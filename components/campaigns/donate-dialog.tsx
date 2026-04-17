@@ -88,6 +88,9 @@ export function DonateDialog({ campaign, open, onOpenChange, onDonateSuccess }: 
   if (!campaign) return null
 
   const progress = Math.min((campaign.amountRaised / campaign.goalAmount) * 100, 100)
+  const remainingAmount = Math.max(campaign.goalAmount - campaign.amountRaised, 0)
+  const isFullyFunded = remainingAmount === 0
+  const isAmountExceedingRemaining = finalAmount ? finalAmount > remainingAmount : false
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -101,6 +104,17 @@ export function DonateDialog({ campaign, open, onOpenChange, onDonateSuccess }: 
 
         {step === 'amount' && (
           <div className="space-y-5 pt-2">
+            {/* Fully Funded Message */}
+            {isFullyFunded && (
+              <div className="p-4 rounded-lg bg-green-100 dark:bg-green-900/30 border border-green-200 dark:border-green-800 text-center">
+                <CheckCircle className="h-8 w-8 text-green-600 dark:text-green-400 mx-auto mb-2" />
+                <h3 className="font-medium text-green-700 dark:text-green-300">Campaign Fully Funded!</h3>
+                <p className="text-sm text-green-600 dark:text-green-400 mt-1">
+                  This campaign has reached its goal. Thank you for your interest!
+                </p>
+              </div>
+            )}
+
             {/* Campaign Info */}
             <div className="p-3 rounded-lg bg-muted/50 border border-border">
               <h3 className="font-medium text-foreground line-clamp-1">{campaign.name}</h3>
@@ -110,57 +124,71 @@ export function DonateDialog({ campaign, open, onOpenChange, onDonateSuccess }: 
                   <span className="font-medium">{formatCurrency(campaign.amountRaised)} of {formatCurrency(campaign.goalAmount)}</span>
                 </div>
                 <Progress value={progress} className="h-2" />
+                {!isFullyFunded && (
+                  <div className="flex justify-between text-sm pt-1">
+                    <span className="text-muted-foreground">Remaining</span>
+                    <span className="font-medium text-primary">{formatCurrency(remainingAmount)}</span>
+                  </div>
+                )}
               </div>
             </div>
 
             {/* Preset Amounts */}
-            <div className="space-y-3">
-              <Label>Select Amount</Label>
-              <div className="grid grid-cols-3 gap-2">
-                {PRESET_AMOUNTS.map((amount) => (
+            {!isFullyFunded && (
+              <div className="space-y-3">
+                <Label>Select Amount (Max: {formatCurrency(remainingAmount)})</Label>
+                <div className="grid grid-cols-3 gap-2">
+                  {PRESET_AMOUNTS.filter(amount => amount <= remainingAmount).map((amount) => (
+                    <Button
+                      key={amount}
+                      variant={selectedAmount === amount ? 'default' : 'outline'}
+                      className="w-full"
+                      onClick={() => handleAmountSelect(amount)}
+                    >
+                      ₹{amount.toLocaleString()}
+                    </Button>
+                  ))}
                   <Button
-                    key={amount}
-                    variant={selectedAmount === amount ? 'default' : 'outline'}
+                    variant={customAmount ? 'default' : 'outline'}
                     className="w-full"
-                    onClick={() => handleAmountSelect(amount)}
+                    onClick={() => {
+                      setSelectedAmount(null)
+                      setCustomAmount('')
+                    }}
                   >
-                    ₹{amount.toLocaleString()}
+                    Custom
                   </Button>
-                ))}
-                <Button
-                  variant={customAmount ? 'default' : 'outline'}
-                  className="w-full"
-                  onClick={() => {
-                    setSelectedAmount(null)
-                    setCustomAmount('')
-                  }}
-                >
-                  Custom
-                </Button>
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Custom Amount Input */}
-            {(customAmount !== '' || selectedAmount === null) && (
+            {!isFullyFunded && (customAmount !== '' || selectedAmount === null) && (
               <div className="space-y-2">
-                <Label htmlFor="customAmount">Enter Amount</Label>
+                <Label htmlFor="customAmount">Enter Amount (₹100 - {formatCurrency(remainingAmount)})</Label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">₹</span>
                   <Input
                     id="customAmount"
                     type="number"
                     min="100"
-                    placeholder="Enter amount (min ₹100)"
+                    max={remainingAmount}
+                    placeholder={`Enter amount (max ₹${remainingAmount.toLocaleString()})`}
                     value={customAmount}
                     onChange={(e) => handleCustomAmountChange(e.target.value)}
                     className="pl-8"
                   />
                 </div>
+                {isAmountExceedingRemaining && (
+                  <p className="text-sm text-destructive">
+                    Amount exceeds remaining goal. Maximum donation: {formatCurrency(remainingAmount)}
+                  </p>
+                )}
               </div>
             )}
 
             {/* Impact Preview */}
-            {finalAmount && finalAmount >= 100 && (
+            {!isFullyFunded && finalAmount && finalAmount >= 100 && !isAmountExceedingRemaining && (
               <div className="p-3 rounded-lg bg-primary/5 border border-primary/20">
                 <p className="text-sm text-foreground">
                   <span className="font-medium">Your Impact:</span>{' '}
@@ -175,13 +203,19 @@ export function DonateDialog({ campaign, open, onOpenChange, onDonateSuccess }: 
             )}
 
             {/* Proceed Button */}
-            <Button 
-              className="w-full" 
-              onClick={handleProceedToPayment}
-              disabled={!finalAmount || finalAmount < 100}
-            >
-              Continue to Payment
-            </Button>
+            {isFullyFunded ? (
+              <Button className="w-full" onClick={handleClose}>
+                Close
+              </Button>
+            ) : (
+              <Button 
+                className="w-full" 
+                onClick={handleProceedToPayment}
+                disabled={!finalAmount || finalAmount < 100 || isAmountExceedingRemaining}
+              >
+                Continue to Payment
+              </Button>
+            )}
           </div>
         )}
 
