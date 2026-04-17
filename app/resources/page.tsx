@@ -6,6 +6,7 @@ import { ResourceCard, Resource } from '@/components/resources/resource-card'
 import { ResourceTable } from '@/components/resources/resource-table'
 import { ResourceAlerts } from '@/components/resources/resource-alerts'
 import { ResourceFlowTracker } from '@/components/resources/resource-flow-tracker'
+import { AddResourceDialog } from '@/components/resources/add-resource-dialog'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -135,32 +136,38 @@ const MOCK_RESOURCES: Resource[] = [
   },
 ]
 
-const RESOURCE_FLOW = [
-  { id: '1', label: 'Storage', count: 5430, icon: 'storage' as const, status: 'completed' as const },
-  { id: '2', label: 'Assigned', count: 1880, icon: 'assigned' as const, status: 'in-progress' as const },
-  { id: '3', label: 'Delivered', count: 1250, icon: 'delivered' as const, status: 'pending' as const },
-]
-
 const CATEGORIES = ['All', 'Food', 'Water', 'Medical', 'Shelter', 'Hygiene', 'Equipment']
 
 export default function ResourcesPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [viewMode, setViewMode] = useState<'table' | 'cards'>('table')
+  const [resources, setResources] = useState<Resource[]>(MOCK_RESOURCES)
 
-  const filteredResources = MOCK_RESOURCES.filter((resource) => {
+  const handleAddResource = (newResource: Resource) => {
+    setResources([newResource, ...resources])
+  }
+
+  const filteredResources = resources.filter((resource) => {
     const matchesSearch = resource.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       resource.location.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesCategory = selectedCategory === 'All' || resource.category === selectedCategory
     return matchesSearch && matchesCategory
   })
 
-  // Calculate stats
-  const totalResources = MOCK_RESOURCES.reduce((acc, r) => acc + r.quantity, 0)
-  const lowStockCount = MOCK_RESOURCES.filter((r) => r.status === 'low-stock').length
-  const expiringCount = MOCK_RESOURCES.filter((r) => r.status === 'expiring-soon').length
-  const allocatedCount = MOCK_RESOURCES.reduce((acc, r) => acc + r.allocatedQuantity, 0)
+  // Calculate stats based on current resources state
+  const totalResources = resources.reduce((acc, r) => acc + r.quantity, 0)
+  const lowStockCount = resources.filter((r) => r.status === 'low-stock').length
+  const expiringCount = resources.filter((r) => r.status === 'expiring-soon').length
+  const allocatedCount = resources.reduce((acc, r) => acc + r.allocatedQuantity, 0)
   const availableCount = totalResources - allocatedCount
+
+  // Resource flow tracker data (updates based on resources)
+  const resourceFlow = [
+    { id: '1', label: 'Storage', count: totalResources, icon: 'storage' as const, status: 'completed' as const },
+    { id: '2', label: 'Assigned', count: allocatedCount, icon: 'assigned' as const, status: 'in-progress' as const },
+    { id: '3', label: 'Delivered', count: Math.floor(allocatedCount * 0.66), icon: 'delivered' as const, status: 'pending' as const },
+  ]
 
   return (
     <AppLayout>
@@ -177,23 +184,29 @@ export default function ResourcesPage() {
                 Inventory and logistics management for relief supplies
               </p>
             </div>
-            <div className="flex items-center gap-2">
-              <Button
-                variant={viewMode === 'table' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setViewMode('table')}
-              >
-                <List className="h-4 w-4 mr-1" />
-                Table
-              </Button>
-              <Button
-                variant={viewMode === 'cards' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setViewMode('cards')}
-              >
-                <LayoutGrid className="h-4 w-4 mr-1" />
-                Cards
-              </Button>
+            <div className="flex items-center gap-3">
+              <AddResourceDialog 
+                onAddResource={handleAddResource}
+                categories={CATEGORIES}
+              />
+              <div className="flex items-center gap-2">
+                <Button
+                  variant={viewMode === 'table' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setViewMode('table')}
+                >
+                  <List className="h-4 w-4 mr-1" />
+                  Table
+                </Button>
+                <Button
+                  variant={viewMode === 'cards' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setViewMode('cards')}
+                >
+                  <LayoutGrid className="h-4 w-4 mr-1" />
+                  Cards
+                </Button>
+              </div>
             </div>
           </div>
 
@@ -272,10 +285,10 @@ export default function ResourcesPage() {
           </div>
 
           {/* Alerts */}
-          <ResourceAlerts resources={MOCK_RESOURCES} />
+          <ResourceAlerts resources={resources} />
 
           {/* Resource Flow Tracker */}
-          <ResourceFlowTracker steps={RESOURCE_FLOW} />
+          <ResourceFlowTracker steps={resourceFlow} />
 
           {/* Search and Filters */}
           <div className="flex flex-col sm:flex-row gap-4">
