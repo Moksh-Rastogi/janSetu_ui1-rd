@@ -297,14 +297,35 @@ For questions or feedback, contact us at support@jansetu.org
                     <XAxis dataKey="month" className="text-xs" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
                     <YAxis className="text-xs" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
                     <Tooltip
-                      contentStyle={{
-                        backgroundColor: 'hsl(var(--popover))',
-                        border: '1px solid hsl(var(--border))',
-                        borderRadius: '8px',
+                      content={({ active, payload, label }) => {
+                        if (active && payload && payload.length) {
+                          return (
+                            <div className="bg-popover/95 backdrop-blur-sm border border-border rounded-xl shadow-2xl p-4 min-w-[180px]">
+                              <div className="flex items-center gap-2 mb-3 pb-2 border-b border-border">
+                                <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                                <p className="font-bold text-foreground">{label}</p>
+                              </div>
+                              <div className="space-y-2">
+                                {payload.map((entry: { name: string; value: number; color: string }, index: number) => (
+                                  <div key={index} className="flex items-center justify-between gap-4 p-2 rounded-lg" style={{ backgroundColor: `${entry.color}15` }}>
+                                    <div className="flex items-center gap-2">
+                                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: entry.color }} />
+                                      <span className="text-xs text-muted-foreground">{entry.name}</span>
+                                    </div>
+                                    <span className="font-bold" style={{ color: entry.color }}>
+                                      {entry.name.includes('₹') ? `₹${entry.value.toLocaleString()}` : entry.value}
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )
+                        }
+                        return null
                       }}
                     />
-                    <Line type="monotone" dataKey="donations" stroke="#4ECDC4" strokeWidth={2} dot={{ fill: '#4ECDC4' }} name="Donations (₹)" />
-                    <Line type="monotone" dataKey="impact" stroke="#FF6B6B" strokeWidth={2} dot={{ fill: '#FF6B6B' }} name="People Helped" />
+                    <Line type="monotone" dataKey="donations" stroke="#4ECDC4" strokeWidth={2} dot={{ fill: '#4ECDC4', r: 4 }} activeDot={{ r: 6, strokeWidth: 2, stroke: '#4ECDC4' }} name="Donations (₹)" />
+                    <Line type="monotone" dataKey="impact" stroke="#FF6B6B" strokeWidth={2} dot={{ fill: '#FF6B6B', r: 4 }} activeDot={{ r: 6, strokeWidth: 2, stroke: '#FF6B6B' }} name="People Helped" />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -333,7 +354,26 @@ For questions or feedback, contact us at support@jansetu.org
                           <Cell key={`cell-${index}`} fill={entry.color} />
                         ))}
                       </Pie>
-                      <Tooltip />
+                      <Tooltip
+                        content={({ active, payload }) => {
+                          if (active && payload && payload.length) {
+                            const entry = payload[0]
+                            const color = entry.payload.color
+                            return (
+                              <div className="bg-popover/95 backdrop-blur-sm border-2 rounded-xl shadow-2xl p-3 min-w-[150px]" style={{ borderColor: color }}>
+                                <div className="flex items-center gap-2 mb-2">
+                                  <div className="w-4 h-4 rounded-full" style={{ backgroundColor: color }} />
+                                  <span className="font-bold text-foreground">{entry.name}</span>
+                                </div>
+                                <div className="pl-6">
+                                  <span className="text-2xl font-bold" style={{ color }}>{entry.value}%</span>
+                                </div>
+                              </div>
+                            )
+                          }
+                          return null
+                        }}
+                      />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
@@ -367,15 +407,39 @@ For questions or feedback, contact us at support@jansetu.org
                     <XAxis type="number" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
                     <YAxis dataKey="region" type="category" tick={{ fill: 'hsl(var(--muted-foreground))' }} width={60} />
                     <Tooltip
-                      contentStyle={{
-                        backgroundColor: 'hsl(var(--popover))',
-                        border: '1px solid hsl(var(--border))',
-                        borderRadius: '8px',
+                      content={({ active, payload, label }) => {
+                        if (active && payload && payload.length) {
+                          return (
+                            <div className="bg-popover/95 backdrop-blur-sm border border-border rounded-xl shadow-2xl p-4 min-w-[200px]">
+                              <div className="flex items-center gap-2 mb-3 pb-2 border-b border-border">
+                                <MapPin className="w-4 h-4 text-primary" />
+                                <p className="font-bold text-foreground">{label} Region</p>
+                              </div>
+                              <div className="space-y-2">
+                                {payload.map((entry: { name: string; value: number; color: string }, index: number) => (
+                                  <div key={index} className="flex items-center justify-between gap-4 p-2 rounded-lg" style={{ backgroundColor: `${entry.color}20` }}>
+                                    <div className="flex items-center gap-2">
+                                      <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: entry.color }} />
+                                      <span className="text-xs text-muted-foreground">{entry.name}</span>
+                                    </div>
+                                    <span className="font-bold text-base" style={{ color: entry.color }}>
+                                      {entry.value.toLocaleString()}
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )
+                        }
+                        return null
                       }}
                     />
-                    <Legend />
-                    <Bar dataKey="families" fill="#4ECDC4" name="Families Helped" radius={[0, 4, 4, 0]} />
-                    <Bar dataKey="resources" fill="#FFE66D" name="Resources Delivered" radius={[0, 4, 4, 0]} />
+                    <Legend 
+                      wrapperStyle={{ paddingTop: '10px' }}
+                      formatter={(value) => <span className="text-sm text-muted-foreground">{value}</span>}
+                    />
+                    <Bar dataKey="families" fill="#4ECDC4" name="Families Helped" radius={[0, 4, 4, 0]} activeBar={{ stroke: '#4ECDC4', strokeWidth: 2 }} />
+                    <Bar dataKey="resources" fill="#FFE66D" name="Resources Delivered" radius={[0, 4, 4, 0]} activeBar={{ stroke: '#FFE66D', strokeWidth: 2 }} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>

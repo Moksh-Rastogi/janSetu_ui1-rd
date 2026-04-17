@@ -37,29 +37,54 @@ export function PredictiveInsights({
 
   const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: Array<{ name: string; value: number; color: string; dataKey: string }>; label?: string }) => {
     if (active && payload && payload.length) {
-      const item = payload[0]
       const dataPoint = data.find(d => d.month === label)
+      const isPredicted = dataPoint && !dataPoint.actual
       return (
-        <div className="bg-popover border border-border rounded-lg shadow-lg p-3">
-          <p className="font-medium text-foreground mb-2">{label}</p>
-          {payload.map((entry, index) => (
-            <div key={index} className="flex items-center gap-2 text-sm">
-              <div
-                className="w-2 h-2 rounded-full"
-                style={{ backgroundColor: entry.color }}
-              />
-              <span className="text-muted-foreground">
-                {entry.dataKey === 'actual' ? 'Actual' : 'Predicted'}:
-              </span>
-              <span className="font-medium text-foreground">
-                {formatValue(entry.value)}
-              </span>
+        <div className="bg-popover/95 backdrop-blur-sm border border-border rounded-xl shadow-2xl p-4 min-w-[200px]">
+          <div className="flex items-center gap-2 mb-3 pb-2 border-b border-border">
+            <Brain className="w-4 h-4 text-primary" />
+            <p className="font-bold text-foreground">{label}</p>
+            {isPredicted && (
+              <Badge variant="outline" className="text-xs ml-auto">Forecast</Badge>
+            )}
+          </div>
+          <div className="space-y-2">
+            {payload.map((entry, index) => (
+              <div 
+                key={index} 
+                className="flex items-center justify-between gap-4 p-2 rounded-lg"
+                style={{ backgroundColor: `${entry.color}15` }}
+              >
+                <div className="flex items-center gap-2">
+                  <div
+                    className="w-3 h-3 rounded-full shadow-sm"
+                    style={{ backgroundColor: entry.color }}
+                  />
+                  <span className="text-sm text-muted-foreground">
+                    {entry.dataKey === 'actual' ? 'Actual' : 'Predicted'}
+                  </span>
+                </div>
+                <span className="font-bold text-base" style={{ color: entry.color }}>
+                  {formatValue(entry.value)}
+                </span>
+              </div>
+            ))}
+          </div>
+          {dataPoint && isPredicted && (
+            <div className="mt-3 pt-2 border-t border-border">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">AI Confidence</span>
+                <div className="flex items-center gap-2">
+                  <div className="w-16 h-1.5 rounded-full bg-muted overflow-hidden">
+                    <div 
+                      className="h-full rounded-full bg-primary" 
+                      style={{ width: `${dataPoint.confidence}%` }}
+                    />
+                  </div>
+                  <span className="text-xs font-semibold text-primary">{dataPoint.confidence}%</span>
+                </div>
+              </div>
             </div>
-          ))}
-          {dataPoint && !dataPoint.actual && (
-            <p className="text-xs text-muted-foreground mt-2">
-              Confidence: {dataPoint.confidence}%
-            </p>
           )}
         </div>
       )
