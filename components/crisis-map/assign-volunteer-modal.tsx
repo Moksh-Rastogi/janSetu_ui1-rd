@@ -7,11 +7,19 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
 
-interface Volunteer {
+interface RegisteredVolunteer {
   id: string
   name: string
-  role: string
-  available: boolean
+  skills: string[]
+  availability: 'available' | 'busy' | 'offline'
+  rating: number
+  reliabilityScore: number
+  completedTasks: number
+  points: number
+  badges: string[]
+  joinedDate: string
+  location: string
+  ngoAssociations: string[]
 }
 
 interface AssignVolunteerModalProps {
@@ -19,37 +27,30 @@ interface AssignVolunteerModalProps {
   onClose: () => void
   onAssign: (volunteerId: string, volunteerName: string) => void
   issueTitle: string
+  registeredVolunteers?: RegisteredVolunteer[]
 }
 
-// Mock available volunteers data
-const AVAILABLE_VOLUNTEERS: Volunteer[] = [
-  { id: 'VOL001', name: 'Rahul Sharma', role: 'Medical Coordinator', available: true },
-  { id: 'VOL002', name: 'Priya Patel', role: 'Logistics Lead', available: true },
-  { id: 'VOL003', name: 'Amit Kumar', role: 'Field Worker', available: true },
-  { id: 'VOL004', name: 'Sneha Reddy', role: 'Social Worker', available: false },
-  { id: 'VOL005', name: 'Vikram Singh', role: 'Emergency Responder', available: true },
-  { id: 'VOL006', name: 'Anita Gupta', role: 'Distribution Manager', available: true },
-  { id: 'VOL007', name: 'Deepak Verma', role: 'Transport Coordinator', available: false },
-  { id: 'VOL008', name: 'Meera Iyer', role: 'Community Liaison', available: true },
-  { id: 'VOL009', name: 'Kiran Joshi', role: 'Health Worker', available: true },
-  { id: 'VOL010', name: 'Suresh Nair', role: 'Documentation Lead', available: true },
-]
-
-export function AssignVolunteerModal({ isOpen, onClose, onAssign, issueTitle }: AssignVolunteerModalProps) {
+export function AssignVolunteerModal({ 
+  isOpen, 
+  onClose, 
+  onAssign, 
+  issueTitle,
+  registeredVolunteers = []
+}: AssignVolunteerModalProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [manualName, setManualName] = useState('')
   const [manualId, setManualId] = useState('')
-  const [selectedVolunteer, setSelectedVolunteer] = useState<Volunteer | null>(null)
+  const [selectedVolunteer, setSelectedVolunteer] = useState<RegisteredVolunteer | null>(null)
   const [assignMode, setAssignMode] = useState<'select' | 'manual'>('select')
 
-  const filteredVolunteers = AVAILABLE_VOLUNTEERS.filter((v) => {
+  const filteredVolunteers = registeredVolunteers.filter((v) => {
     const query = searchQuery.toLowerCase()
     return (
       v.name.toLowerCase().includes(query) ||
       v.id.toLowerCase().includes(query) ||
-      v.role.toLowerCase().includes(query)
+      v.skills.some(skill => skill.toLowerCase().includes(query))
     )
-  })
+  }).filter(v => v.availability === 'available')
 
   const handleAssign = () => {
     if (assignMode === 'select' && selectedVolunteer) {

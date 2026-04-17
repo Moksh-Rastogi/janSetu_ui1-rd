@@ -25,73 +25,39 @@ import {
 import { cn } from '@/lib/utils'
 import type { Task } from '@/app/tasks/page'
 
+interface RegisteredVolunteer {
+  id: string
+  name: string
+  skills: string[]
+  availability: 'available' | 'busy' | 'offline'
+  rating: number
+  reliabilityScore: number
+  completedTasks: number
+  points: number
+  badges: string[]
+  joinedDate: string
+  location: string
+  ngoAssociations: string[]
+}
+
 interface AssignVolunteerModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   task: Task
   onAssign: (taskId: string, volunteer: { id: string; name: string }) => void
+  registeredVolunteers?: RegisteredVolunteer[]
 }
 
-interface Volunteer {
+interface DisplayVolunteer {
   id: string
   name: string
   skills: string[]
   availability: 'available' | 'busy' | 'offline'
   rating: number
   completedTasks: number
-  distance: string
+  location?: string
   aiRecommended?: boolean
 }
-
-const MOCK_VOLUNTEERS: Volunteer[] = [
-  {
-    id: 'v10',
-    name: 'Arun Sharma',
-    skills: ['Medical', 'First Aid', 'Emergency Response'],
-    availability: 'available',
-    rating: 4.8,
-    completedTasks: 45,
-    distance: '2.5 km',
-    aiRecommended: true,
-  },
-  {
-    id: 'v11',
-    name: 'Neha Kapoor',
-    skills: ['Relief Distribution', 'Logistics'],
-    availability: 'available',
-    rating: 4.9,
-    completedTasks: 62,
-    distance: '3.1 km',
-    aiRecommended: true,
-  },
-  {
-    id: 'v12',
-    name: 'Suresh Reddy',
-    skills: ['Survey', 'Documentation', 'Photography'],
-    availability: 'busy',
-    rating: 4.5,
-    completedTasks: 28,
-    distance: '5.2 km',
-  },
-  {
-    id: 'v13',
-    name: 'Lakshmi Iyer',
-    skills: ['Training', 'Communication'],
-    availability: 'available',
-    rating: 4.7,
-    completedTasks: 38,
-    distance: '4.0 km',
-  },
-  {
-    id: 'v14',
-    name: 'Mohammed Ali',
-    skills: ['Infrastructure', 'Construction'],
-    availability: 'offline',
-    rating: 4.6,
-    completedTasks: 52,
-    distance: '6.8 km',
-  },
-]
 
 const availabilityConfig = {
   available: { label: 'Available', className: 'bg-green-500' },
@@ -99,12 +65,29 @@ const availabilityConfig = {
   offline: { label: 'Offline', className: 'bg-gray-400' },
 }
 
-export function AssignVolunteerModal({ open, onOpenChange, task, onAssign }: AssignVolunteerModalProps) {
+export function AssignVolunteerModal({ 
+  open, 
+  onOpenChange, 
+  task, 
+  onAssign,
+  registeredVolunteers = []
+}: AssignVolunteerModalProps) {
   const [search, setSearch] = useState('')
   const [filterSkill, setFilterSkill] = useState<string | null>(null)
   const [filterAvailability, setFilterAvailability] = useState<string | null>('available')
 
-  const filteredVolunteers = MOCK_VOLUNTEERS.filter(volunteer => {
+  // Convert registered volunteers to display format
+  const displayVolunteers: DisplayVolunteer[] = registeredVolunteers.map(v => ({
+    id: v.id,
+    name: v.name,
+    skills: v.skills,
+    availability: v.availability,
+    rating: v.rating,
+    completedTasks: v.completedTasks,
+    location: v.location,
+  }))
+
+  const filteredVolunteers = displayVolunteers.filter(volunteer => {
     if (search && !volunteer.name.toLowerCase().includes(search.toLowerCase())) {
       return false
     }
@@ -121,11 +104,9 @@ export function AssignVolunteerModal({ open, onOpenChange, task, onAssign }: Ass
     return true
   })
 
-  // Sort AI recommended first
+  // Sort by rating
   const sortedVolunteers = [...filteredVolunteers].sort((a, b) => {
-    if (a.aiRecommended && !b.aiRecommended) return -1
-    if (!a.aiRecommended && b.aiRecommended) return 1
-    return 0
+    return b.rating - a.rating
   })
 
   return (
