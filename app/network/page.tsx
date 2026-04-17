@@ -248,13 +248,13 @@ export default function NetworkPage() {
               </p>
             </div>
             <div className="flex items-center gap-4">
+              <AddNGODialog onAddNGO={handleAddNGO} />
               <div className="text-right">
                 <p className="text-2xl font-bold text-foreground">
                   {filteredNGOs.length}
                 </p>
                 <p className="text-sm text-muted-foreground">NGOs Found</p>
               </div>
-              <AddNGODialog onAddNGO={handleAddNGO} />
             </div>
           </div>
 
