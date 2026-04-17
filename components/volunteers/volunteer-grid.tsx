@@ -59,20 +59,8 @@ interface VolunteerCardProps {
 }
 
 function VolunteerCard({ volunteer, tasks }: VolunteerCardProps) {
-  // Calculate availability based on assigned tasks
-  const volunteerAssignedInProgressTasks = tasks.filter(
-    task => task.status === 'in-progress' && 
-            task.assignedVolunteers.some(v => v.id === volunteer.id)
-  )
-  
-  const volunteerAssignedToDoTasks = tasks.filter(
-    task => task.status === 'todo' && 
-            task.assignedVolunteers.some(v => v.id === volunteer.id)
-  )
-  
-  const hasAssignedTasks = volunteerAssignedInProgressTasks.length > 0 || volunteerAssignedToDoTasks.length > 0
-  const currentAvailability = hasAssignedTasks ? 'busy' : volunteer.availability
-  const availability = availabilityConfig[currentAvailability]
+  // Use volunteer's actual availability from context
+  const availability = availabilityConfig[volunteer.availability]
   
   return (
     <Card className="hover:shadow-lg transition-all group">
