@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { ImpactReport } from '@/components/donations/impact-report'
 import { cn } from '@/lib/utils'
 
 interface Donation {
@@ -57,6 +58,7 @@ export function DonorDashboard({
   const [activeRecurring, setActiveRecurring] = useState<Record<string, boolean>>(
     recurringDonations.reduce((acc, d) => ({ ...acc, [d.id]: d.active }), {})
   )
+  const [showImpactReport, setShowImpactReport] = useState(false)
 
   const formatCurrency = (amount: number) => {
     if (amount >= 100000) {
@@ -210,10 +212,23 @@ export function DonorDashboard({
         </Tabs>
 
         {/* View All Button */}
-        <Button variant="outline" className="w-full mt-4">
+        <Button 
+          variant="outline" 
+          className="w-full mt-4"
+          onClick={() => setShowImpactReport(true)}
+        >
           View Full Impact Report
           <ChevronRight className="h-4 w-4 ml-2" />
         </Button>
+
+        {/* Impact Report Dialog */}
+        <ImpactReport
+          open={showImpactReport}
+          onOpenChange={setShowImpactReport}
+          totalDonated={totalDonated}
+          totalImpact={totalImpact}
+          donations={donations}
+        />
       </CardContent>
     </Card>
   )
