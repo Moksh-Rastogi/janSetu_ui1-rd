@@ -16,62 +16,81 @@ import {
   Settings,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useRole, UserRole } from './role-context'
 
-const MENU_ITEMS = [
+interface MenuItem {
+  icon: typeof LayoutDashboard
+  label: string
+  href: string
+  allowedRoles: UserRole[]
+}
+
+const MENU_ITEMS: MenuItem[] = [
   {
     icon: LayoutDashboard,
     label: 'Dashboard',
     href: '/',
+    allowedRoles: ['ngo-admin', 'volunteer', 'donor'],
   },
   {
     icon: Map,
     label: 'Crisis Map',
     href: '/crisis-map',
+    allowedRoles: ['ngo-admin', 'volunteer', 'donor'],
   },
   {
     icon: Zap,
     label: 'Campaigns',
     href: '/campaigns',
+    allowedRoles: ['ngo-admin', 'volunteer', 'donor'],
   },
   {
     icon: CheckSquare,
     label: 'Tasks',
     href: '/tasks',
+    allowedRoles: ['ngo-admin', 'volunteer', 'donor'],
   },
   {
     icon: Users,
     label: 'Volunteers',
     href: '/volunteers',
+    allowedRoles: ['ngo-admin'], // Only NGO Admin
   },
   {
     icon: Network,
     label: 'NGO Network',
     href: '/network',
+    allowedRoles: ['ngo-admin'], // Only NGO Admin
   },
   {
     icon: Heart,
     label: 'Donations',
     href: '/donations',
+    allowedRoles: ['ngo-admin', 'volunteer', 'donor'],
   },
   {
     icon: BookOpen,
     label: 'Resources',
     href: '/resources',
+    allowedRoles: ['ngo-admin', 'volunteer'], // Not for Donor
   },
   {
     icon: BarChart3,
     label: 'Analytics',
     href: '/analytics',
+    allowedRoles: ['ngo-admin'], // Only NGO Admin
   },
   {
     icon: MessageSquare,
     label: 'Messages',
     href: '/messages',
+    allowedRoles: ['ngo-admin', 'volunteer', 'donor'],
   },
   {
     icon: Settings,
     label: 'Settings',
     href: '/settings',
+    allowedRoles: ['ngo-admin', 'volunteer', 'donor'],
   },
 ]
 
@@ -82,10 +101,16 @@ interface SidebarProps {
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname()
+  const { currentRole } = useRole()
 
   const isActive = (href: string) => {
     return pathname === href || pathname.startsWith(href + '/')
   }
+
+  // Filter menu items based on current role
+  const filteredMenuItems = MENU_ITEMS.filter((item) =>
+    item.allowedRoles.includes(currentRole)
+  )
 
   return (
     <>
@@ -106,14 +131,14 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           'md:relative',
           // Mobile: fixed overlay
           'fixed left-0 top-16 z-40',
-          // Dynamic width based on open state
-          isOpen ? 'w-64 md:w-64' : 'w-0 md:w-64'
+          // Dynamic width based on open state - works on both mobile and desktop
+          isOpen ? 'w-64' : 'w-0 overflow-hidden'
         )}
       >
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto px-4 py-6">
           <div className="space-y-1">
-            {MENU_ITEMS.map((item) => {
+            {filteredMenuItems.map((item) => {
               const Icon = item.icon
               const active = isActive(item.href)
               return (
@@ -129,7 +154,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                   onClick={onClose}
                 >
                   <Icon className="h-5 w-5 flex-shrink-0" />
-                  <span className="md:block hidden">{item.label}</span>
+                  <span>{item.label}</span>
                 </Link>
               )
             })}

@@ -15,11 +15,10 @@ import {
 import { cn } from '@/lib/utils'
 import { searchAll, getTypeLabel, getTypeColor, type SearchItem } from '@/lib/search-data'
 import Link from 'next/link'
-
-type UserRole = 'admin' | 'volunteer' | 'donor'
+import { useRole, type UserRole } from './role-context'
 
 const ROLES: { value: UserRole; label: string; color: string }[] = [
-  { value: 'admin', label: 'NGO Admin', color: 'bg-primary' },
+  { value: 'ngo-admin', label: 'NGO Admin', color: 'bg-primary' },
   { value: 'volunteer', label: 'Volunteer', color: 'bg-secondary' },
   { value: 'donor', label: 'Donor', color: 'bg-accent' },
 ]
@@ -43,20 +42,20 @@ function getTypeIcon(type: SearchItem['type']) {
 // Get link for search result
 function getResultLink(item: SearchItem): string {
   switch (item.type) {
-    case 'campaign': return '/crisis-map'
-    case 'task': return '/tasks'
-    case 'ngo': return '/crisis-map'
+    case 'campaign': return `/campaigns/${item.id}`
+    case 'task': return `/tasks/${item.id}`
+    case 'ngo': return `/network/${item.id}`
     case 'volunteer': return `/volunteers/${item.id}`
     default: return '/'
   }
 }
 
 export function Navbar({ onMenuClick, sidebarOpen }: NavbarProps) {
-  const [role, setRole] = useState<UserRole>('admin')
+  const { currentRole: globalRole, setRole, currentUser } = useRole()
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
 
-  const currentRole = ROLES.find((r) => r.value === role)
+  const currentRoleConfig = ROLES.find((r) => r.value === globalRole)
 
   // Search results
   const searchResults = useMemo(() => {
@@ -221,8 +220,8 @@ export function Navbar({ onMenuClick, sidebarOpen }: NavbarProps) {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="gap-2 hidden sm:flex">
-                <span className={cn('h-2 w-2 rounded-full', currentRole?.color)} />
-                <span className="text-xs">{currentRole?.label}</span>
+                <span className={cn('h-2 w-2 rounded-full', currentRoleConfig?.color)} />
+                <span className="text-xs">{currentRoleConfig?.label}</span>
                 <ChevronDown className="h-3 w-3 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
@@ -233,7 +232,7 @@ export function Navbar({ onMenuClick, sidebarOpen }: NavbarProps) {
                 <DropdownMenuItem
                   key={r.value}
                   onClick={() => setRole(r.value)}
-                  className={cn(role === r.value && 'bg-muted')}
+                  className={cn(globalRole === r.value && 'bg-muted')}
                 >
                   <span className={cn('h-2 w-2 rounded-full mr-2', r.color)} />
                   {r.label}
@@ -247,16 +246,23 @@ export function Navbar({ onMenuClick, sidebarOpen }: NavbarProps) {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">
                 <div className="h-6 w-6 rounded-full bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center">
-                  JD
+                  {currentUser.name.split(' ').map((n) => n[0]).join('')}
                 </div>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuLabel className="font-normal">
+                <div className="flex flex-col space-y-1">
+                  <p className="text-sm font-medium">{currentUser.name}</p>
+                  <p className="text-xs text-muted-foreground">{currentUser.email}</p>
+                </div>
+              </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="gap-2">
-                <User className="h-4 w-4" />
-                <span>Profile</span>
+              <DropdownMenuItem className="gap-2" asChild>
+                <Link href="/settings">
+                  <User className="h-4 w-4" />
+                  <span>Profile</span>
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="gap-2 text-destructive">

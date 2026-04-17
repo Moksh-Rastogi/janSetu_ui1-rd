@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { AppLayout } from '@/components/layout/app-layout'
+import { useRole } from '@/components/layout/role-context'
 import { KPICard } from '@/components/dashboard/kpi-card'
 import { AIInsightsPanel } from '@/components/dashboard/ai-insights'
 import { ActivityFeed } from '@/components/dashboard/activity-feed'
@@ -88,6 +89,7 @@ const MOCK_HOTSPOTS = [
 ]
 
 export default function DashboardPage() {
+  const { currentUser } = useRole()
   const [insights, setInsights] = useState(MOCK_INSIGHTS)
 
   const handleDismissInsight = (id: string) => {
@@ -100,7 +102,7 @@ export default function DashboardPage() {
         <div className="space-y-6 max-w-7xl mx-auto">
         {/* Page Header */}
         <div>
-          <h1 className="text-3xl font-bold text-foreground text-pretty">John Doe</h1>
+          <h1 className="text-3xl font-bold text-foreground text-pretty">{currentUser.name}</h1>
           <p className="text-muted-foreground mt-1">
             Welcome back! Here&apos;s your ecosystem overview.
           </p>
