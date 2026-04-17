@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { AppLayout } from '@/components/layout/app-layout'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -29,6 +29,8 @@ import {
   Clock,
   BadgeCheck,
   Star,
+  Upload,
+  X,
 } from 'lucide-react'
 
 // Mock user data
@@ -77,6 +79,10 @@ export default function SettingsPage() {
     email: user.email,
     phone: user.phone,
   })
+  const [uploadedDocuments, setUploadedDocuments] = useState<
+    { name: string; status: 'pending' | 'verified'; file: File }[]
+  >([])
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleNotificationChange = (key: keyof typeof user.notifications) => {
     setUser((prev) => ({
@@ -106,6 +112,30 @@ export default function SettingsPage() {
       phone: formData.phone,
     }))
     setIsEditing(false)
+  }
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (files && files.length > 0) {
+      const newDocs = Array.from(files).map((file) => ({
+        name: file.name,
+        status: 'pending' as const,
+        file,
+      }))
+      setUploadedDocuments((prev) => [...prev, ...newDocs])
+    }
+    // Reset input so the same file can be selected again
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+  }
+
+  const handleRemoveDocument = (index: number) => {
+    setUploadedDocuments((prev) => prev.filter((_, i) => i !== index))
+  }
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click()
   }
 
   return (
@@ -608,8 +638,47 @@ export default function SettingsPage() {
                     ))}
                   </div>
 
-                  <Button variant="outline" className="w-full">
-                    <FileText className="h-4 w-4 mr-2" />
+                  {/* Uploaded Documents (Pending) */}
+                  {uploadedDocuments.length > 0 && (
+                    <div className="space-y-3 pt-2">
+                      <p className="text-sm font-medium text-foreground">Pending Documents</p>
+                      {uploadedDocuments.map((doc, index) => (
+                        <div key={index} className="flex items-center justify-between py-2 px-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+                          <div className="flex items-center gap-3">
+                            <FileText className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
+                            <span className="text-sm text-foreground truncate max-w-[200px]">{doc.name}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline" className="text-yellow-600 border-yellow-600">
+                              <Clock className="h-3 w-3 mr-1" />
+                              Pending
+                            </Badge>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-6 w-6 text-muted-foreground hover:text-destructive"
+                              onClick={() => handleRemoveDocument(index)}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Hidden file input */}
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileUpload}
+                    className="hidden"
+                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                    multiple
+                  />
+
+                  <Button variant="outline" className="w-full" onClick={handleUploadClick}>
+                    <Upload className="h-4 w-4 mr-2" />
                     Upload New Document
                   </Button>
                 </CardContent>
