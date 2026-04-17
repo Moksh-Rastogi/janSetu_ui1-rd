@@ -1,6 +1,6 @@
 'use client'
 
-import { use } from 'react'
+import { use, useState } from 'react'
 import Link from 'next/link'
 import { AppLayout } from '@/components/layout/app-layout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { AssignTaskModal } from '@/components/volunteers/assign-task-modal'
 import { 
   ArrowLeft, 
   Star, 
@@ -51,6 +52,28 @@ interface Volunteer {
   monthlyStats: { month: string; tasks: number; hours: number }[]
 }
 
+interface Task {
+  id: string
+  title: string
+  description: string
+  priority: 'critical' | 'high' | 'medium' | 'low'
+  location: string
+  status: 'todo' | 'in-progress' | 'completed'
+  assignedVolunteers: {
+    id: string
+    name: string
+    avatar?: string
+  }[]
+  aiAssigned: boolean
+  dueDate: string
+  category: string
+  donators?: {
+    id: string
+    name: string
+    amount: number
+  }[]
+}
+
 const MOCK_VOLUNTEER: Volunteer = {
   id: 'v1',
   name: 'Raj Patel',
@@ -89,6 +112,81 @@ const MOCK_VOLUNTEER: Volunteer = {
   ],
 }
 
+const MOCK_TASKS: Task[] = [
+  {
+    id: '1',
+    title: 'Emergency Medical Camp - Sector 12',
+    description: 'Set up emergency medical camp for first aid and health checkups',
+    priority: 'critical',
+    location: 'Sector 12, Delhi',
+    status: 'todo',
+    assignedVolunteers: [],
+    aiAssigned: false,
+    dueDate: '2024-01-18',
+    category: 'Medical',
+  },
+  {
+    id: '2',
+    title: 'First Aid Training Session',
+    description: 'Conduct first aid training for 20 new volunteers',
+    priority: 'high',
+    location: 'NGO Office, Delhi',
+    status: 'todo',
+    assignedVolunteers: [],
+    aiAssigned: false,
+    dueDate: '2024-01-19',
+    category: 'First Aid',
+  },
+  {
+    id: '3',
+    title: 'Relief Supply Distribution',
+    description: 'Distribute emergency relief supplies to affected families',
+    priority: 'critical',
+    location: 'Multiple locations, Delhi',
+    status: 'in-progress',
+    assignedVolunteers: [{ id: 'v2', name: 'Priya Singh' }],
+    aiAssigned: true,
+    dueDate: '2024-01-17',
+    category: 'Logistics',
+  },
+  {
+    id: '4',
+    title: 'Counseling Session - Mental Health Support',
+    description: 'Provide counseling and emotional support to affected families',
+    priority: 'high',
+    location: 'Community Center, Delhi',
+    status: 'todo',
+    assignedVolunteers: [],
+    aiAssigned: false,
+    dueDate: '2024-01-20',
+    category: 'Counseling',
+  },
+  {
+    id: '5',
+    title: 'Emergency Response Drill',
+    description: 'Conduct emergency response drill with team members',
+    priority: 'medium',
+    location: 'NGO Office, Delhi',
+    status: 'todo',
+    assignedVolunteers: [],
+    aiAssigned: false,
+    dueDate: '2024-01-21',
+    category: 'Emergency Response',
+  },
+  {
+    id: '6',
+    title: 'Medical Supplies Inventory Check',
+    description: 'Check and organize medical supplies inventory',
+    priority: 'medium',
+    location: 'Warehouse, Delhi',
+    status: 'in-progress',
+    assignedVolunteers: [{ id: 'v3', name: 'Dr. Amit Kumar' }],
+    aiAssigned: false,
+    dueDate: '2024-01-22',
+    category: 'Medical',
+  },
+]
+
 const availabilityConfig = {
   available: { label: 'Available', className: 'bg-green-500' },
   busy: { label: 'Busy', className: 'bg-yellow-500' },
@@ -103,9 +201,17 @@ const statusConfig = {
 
 export default function VolunteerProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
+  const [assignTaskOpen, setAssignTaskOpen] = useState(false)
+  
   // In a real app, fetch volunteer data based on id
   const volunteer = MOCK_VOLUNTEER
   const availability = availabilityConfig[volunteer.availability]
+
+  const handleAssignTask = (volunteerId: string, taskId: string) => {
+    // In a real app, this would make an API call to assign the task
+    console.log(`[v0] Assigned task ${taskId} to volunteer ${volunteerId}`)
+    setAssignTaskOpen(false)
+  }
 
   return (
     <AppLayout>
@@ -172,7 +278,9 @@ export default function VolunteerProfilePage({ params }: { params: Promise<{ id:
                         <Mail className="h-4 w-4 mr-1" />
                         Contact
                       </Button>
-                      <Button size="sm">Assign Task</Button>
+                      <Button size="sm" onClick={() => setAssignTaskOpen(true)}>
+                        Assign Task
+                      </Button>
                     </div>
                   </div>
 
@@ -389,6 +497,20 @@ export default function VolunteerProfilePage({ params }: { params: Promise<{ id:
           </Tabs>
         </div>
       </div>
+
+      {/* Assign Task Modal */}
+      <AssignTaskModal
+        open={assignTaskOpen}
+        onOpenChange={setAssignTaskOpen}
+        volunteer={{
+          id: volunteer.id,
+          name: volunteer.name,
+          skills: volunteer.skills,
+          availability: volunteer.availability,
+        }}
+        tasks={MOCK_TASKS}
+        onAssign={handleAssignTask}
+      />
     </AppLayout>
   )
 }
