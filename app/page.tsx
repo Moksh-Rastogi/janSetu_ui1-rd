@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { AppLayout } from '@/components/layout/app-layout'
+import { useRole } from '@/components/layout/role-context'
 import { KPICard } from '@/components/dashboard/kpi-card'
 import { AIInsightsPanel } from '@/components/dashboard/ai-insights'
 import { ActivityFeed } from '@/components/dashboard/activity-feed'
@@ -88,6 +89,7 @@ const MOCK_HOTSPOTS = [
 ]
 
 export default function DashboardPage() {
+  const { currentUser } = useRole()
   const [insights, setInsights] = useState(MOCK_INSIGHTS)
 
   const handleDismissInsight = (id: string) => {
