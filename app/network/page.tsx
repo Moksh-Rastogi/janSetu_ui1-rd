@@ -197,11 +197,7 @@ export default function NetworkPage() {
       activeCampaigns: 0,
       campaignsArray: [],
       resources: formData.resources.length > 0 ? formData.resources : ['To be added'],
-      impactStats: formData.impactStats.length > 0 ? formData.impactStats : [
-        { label: 'People Served', value: '0' },
-        { label: 'Projects', value: '0' },
-        { label: 'Volunteers', value: '0' },
-      ],
+      impactStats: formData.impactStats,
     }
     setNgos([newNGO, ...ngos])
   }

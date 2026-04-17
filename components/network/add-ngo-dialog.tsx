@@ -20,6 +20,12 @@ interface ImpactStat {
   value: string
 }
 
+interface ImpactStatsInput {
+  peopleServed: string
+  livesSaved: string
+  doctors: string
+}
+
 interface NGOFormData {
   name: string
   location: string
@@ -45,8 +51,11 @@ export function AddNGODialog({ onAddNGO }: AddNGODialogProps) {
   })
   const [newFocusArea, setNewFocusArea] = useState('')
   const [newResource, setNewResource] = useState('')
-  const [newStatLabel, setNewStatLabel] = useState('')
-  const [newStatValue, setNewStatValue] = useState('')
+  const [impactStatsInput, setImpactStatsInput] = useState<ImpactStatsInput>({
+    peopleServed: '',
+    livesSaved: '',
+    doctors: '',
+  })
 
   const handleAddFocusArea = () => {
     if (newFocusArea.trim() && !formData.focusAreas.includes(newFocusArea.trim())) {
@@ -82,31 +91,20 @@ export function AddNGODialog({ onAddNGO }: AddNGODialogProps) {
     })
   }
 
-  const handleAddImpactStat = () => {
-    if (newStatLabel.trim() && newStatValue.trim()) {
-      setFormData({
-        ...formData,
-        impactStats: [
-          ...formData.impactStats,
-          { label: newStatLabel.trim(), value: newStatValue.trim() },
-        ],
-      })
-      setNewStatLabel('')
-      setNewStatValue('')
-    }
-  }
-
-  const handleRemoveImpactStat = (label: string) => {
-    setFormData({
-      ...formData,
-      impactStats: formData.impactStats.filter((s) => s.label !== label),
-    })
-  }
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (formData.name && formData.location && formData.description && formData.focusAreas.length > 0) {
-      onAddNGO(formData)
+      // Build impact stats from input fields
+      const impactStats: ImpactStat[] = [
+        { label: 'People Served', value: impactStatsInput.peopleServed || '0' },
+        { label: 'Lives Saved', value: impactStatsInput.livesSaved || '0' },
+        { label: 'Doctors', value: impactStatsInput.doctors || '0' },
+      ]
+      
+      onAddNGO({
+        ...formData,
+        impactStats,
+      })
       setFormData({
         name: '',
         location: '',
@@ -114,6 +112,11 @@ export function AddNGODialog({ onAddNGO }: AddNGODialogProps) {
         focusAreas: [],
         resources: [],
         impactStats: [],
+      })
+      setImpactStatsInput({
+        peopleServed: '',
+        livesSaved: '',
+        doctors: '',
       })
       setOpen(false)
     }
@@ -255,43 +258,50 @@ export function AddNGODialog({ onAddNGO }: AddNGODialogProps) {
           {/* Impact Statistics */}
           <div className="space-y-3">
             <Label>Impact Statistics</Label>
-            <div className="flex gap-2">
-              <Input
-                placeholder="Label (e.g., People Served)"
-                value={newStatLabel}
-                onChange={(e) => setNewStatLabel(e.target.value)}
-                className="flex-1"
-              />
-              <Input
-                placeholder="Value (e.g., 1,000)"
-                value={newStatValue}
-                onChange={(e) => setNewStatValue(e.target.value)}
-                className="flex-1"
-              />
-              <Button type="button" variant="secondary" onClick={handleAddImpactStat}>
-                Add
-              </Button>
-            </div>
-            {formData.impactStats.length > 0 && (
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {formData.impactStats.map((stat) => (
-                  <div
-                    key={stat.label}
-                    className="p-2 rounded-lg bg-muted text-center relative group"
-                  >
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveImpactStat(stat.label)}
-                      className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                    <p className="font-bold text-sm">{stat.value}</p>
-                    <p className="text-xs text-muted-foreground">{stat.label}</p>
-                  </div>
-                ))}
+            <div className="grid grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="peopleServed" className="text-xs text-muted-foreground">
+                  People Served
+                </Label>
+                <Input
+                  id="peopleServed"
+                  type="number"
+                  placeholder="0"
+                  value={impactStatsInput.peopleServed}
+                  onChange={(e) =>
+                    setImpactStatsInput({ ...impactStatsInput, peopleServed: e.target.value })
+                  }
+                />
               </div>
-            )}
+              <div className="space-y-2">
+                <Label htmlFor="livesSaved" className="text-xs text-muted-foreground">
+                  Lives Saved
+                </Label>
+                <Input
+                  id="livesSaved"
+                  type="number"
+                  placeholder="0"
+                  value={impactStatsInput.livesSaved}
+                  onChange={(e) =>
+                    setImpactStatsInput({ ...impactStatsInput, livesSaved: e.target.value })
+                  }
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="doctors" className="text-xs text-muted-foreground">
+                  Doctors
+                </Label>
+                <Input
+                  id="doctors"
+                  type="number"
+                  placeholder="0"
+                  value={impactStatsInput.doctors}
+                  onChange={(e) =>
+                    setImpactStatsInput({ ...impactStatsInput, doctors: e.target.value })
+                  }
+                />
+              </div>
+            </div>
           </div>
 
           {/* Default Values Info */}
