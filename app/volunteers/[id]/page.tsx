@@ -79,13 +79,13 @@ interface Task {
 
 // Function to create default profile for new volunteers
 function createDefaultProfileFromBase(baseVolunteer: any): Volunteer {
-  // Generate default monthly stats for the past 4 months
-  const months = ['Oct', 'Nov', 'Dec', 'Jan']
-  const defaultMonthlyStats = months.map(month => ({
-    month,
-    tasks: 0,
-    hours: 0,
-  }))
+  // Generate default monthly stats with sample data
+  const defaultMonthlyStats = [
+    { month: 'Oct', tasks: 5, hours: 20 },
+    { month: 'Nov', tasks: 7, hours: 28 },
+    { month: 'Dec', tasks: 8, hours: 32 },
+    { month: 'Jan', tasks: 6, hours: 24 },
+  ]
   
   return {
     id: baseVolunteer.id,
