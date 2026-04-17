@@ -47,21 +47,21 @@ export function DonationCard({ campaign, onDonate }: DonationCardProps) {
   }
 
   return (
-    <Card className="hover:shadow-lg transition-all duration-300 overflow-hidden">
-      <CardHeader className="pb-3">
+    <Card className="hover:shadow-lg transition-all duration-300 overflow-hidden h-full flex flex-col">
+      <CardHeader className="pb-3 flex-shrink-0">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
             <Badge className={cn('mb-2', urgency.className)}>
               {urgency.label}
             </Badge>
-            <CardTitle className="text-lg line-clamp-2">{campaign.name}</CardTitle>
+            <CardTitle className="text-lg line-clamp-2 min-h-[3.5rem]">{campaign.name}</CardTitle>
           </div>
         </div>
-        <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
+        <p className="text-sm text-muted-foreground line-clamp-2 mt-1 min-h-[2.5rem]">
           {campaign.description}
         </p>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 flex-1 flex flex-col">
         {/* Progress Section */}
         <div className="space-y-2">
           <div className="flex justify-between items-center text-sm">
@@ -97,14 +97,16 @@ export function DonationCard({ campaign, onDonate }: DonationCardProps) {
           </div>
         </div>
 
-        {/* Action Button */}
-        <Button 
-          className="w-full" 
-          onClick={() => onDonate?.(campaign.id)}
-        >
-          <Heart className="h-4 w-4 mr-2" />
-          Donate Now
-        </Button>
+        {/* Action Button - pushed to bottom */}
+        <div className="mt-auto pt-2">
+          <Button 
+            className="w-full" 
+            onClick={() => onDonate?.(campaign.id)}
+          >
+            <Heart className="h-4 w-4 mr-2" />
+            Donate Now
+          </Button>
+        </div>
       </CardContent>
     </Card>
   )

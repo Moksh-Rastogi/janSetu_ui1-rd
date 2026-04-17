@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import { AppLayout } from '@/components/layout/app-layout'
 import { DonationCard, Campaign } from '@/components/donations/donation-card'
+import { DonateDialog } from '@/components/campaigns/donate-dialog'
+import { AddCampaignDialog } from '@/components/campaigns/add-campaign-dialog'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -21,7 +23,7 @@ import {
 } from 'lucide-react'
 
 // Mock Data
-const MOCK_CAMPAIGNS: Campaign[] = [
+const INITIAL_CAMPAIGNS: Campaign[] = [
   {
     id: '1',
     name: 'Flood Relief Fund - District X',
@@ -93,10 +95,13 @@ const MOCK_CAMPAIGNS: Campaign[] = [
 const CATEGORIES = ['All', 'Emergency Relief', 'Education', 'Healthcare', 'Infrastructure', 'Empowerment']
 
 export default function CampaignsPage() {
+  const [campaigns, setCampaigns] = useState<Campaign[]>(INITIAL_CAMPAIGNS)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('All')
+  const [donateDialogOpen, setDonateDialogOpen] = useState(false)
+  const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null)
 
-  const filteredCampaigns = MOCK_CAMPAIGNS.filter((campaign) => {
+  const filteredCampaigns = campaigns.filter((campaign) => {
     const matchesSearch = campaign.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       campaign.description.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesCategory = selectedCategory === 'All' || campaign.category === selectedCategory
@@ -104,14 +109,35 @@ export default function CampaignsPage() {
   })
 
   // Calculate stats
-  const totalRaised = MOCK_CAMPAIGNS.reduce((acc, c) => acc + c.amountRaised, 0)
-  const totalGoal = MOCK_CAMPAIGNS.reduce((acc, c) => acc + c.goalAmount, 0)
-  const totalDonors = MOCK_CAMPAIGNS.reduce((acc, c) => acc + c.donorCount, 0)
-  const activeCampaigns = MOCK_CAMPAIGNS.length
-  const criticalCampaigns = MOCK_CAMPAIGNS.filter(c => c.urgency === 'critical').length
+  const totalRaised = campaigns.reduce((acc, c) => acc + c.amountRaised, 0)
+  const totalGoal = campaigns.reduce((acc, c) => acc + c.goalAmount, 0)
+  const totalDonors = campaigns.reduce((acc, c) => acc + c.donorCount, 0)
+  const activeCampaigns = campaigns.length
+  const criticalCampaigns = campaigns.filter(c => c.urgency === 'critical').length
 
   const handleDonate = (id: string) => {
-    console.log('Donate to campaign:', id)
+    const campaign = campaigns.find(c => c.id === id)
+    if (campaign) {
+      setSelectedCampaign(campaign)
+      setDonateDialogOpen(true)
+    }
+  }
+
+  const handleDonateSuccess = (campaignId: string, amount: number) => {
+    setCampaigns(prev => prev.map(c => {
+      if (c.id === campaignId) {
+        return {
+          ...c,
+          amountRaised: c.amountRaised + amount,
+          donorCount: c.donorCount + 1,
+        }
+      }
+      return c
+    }))
+  }
+
+  const handleAddCampaign = (newCampaign: Campaign) => {
+    setCampaigns(prev => [newCampaign, ...prev])
   }
 
   return (
@@ -140,6 +166,7 @@ export default function CampaignsPage() {
                   {criticalCampaigns} Critical
                 </Badge>
               )}
+              <AddCampaignDialog onAddCampaign={handleAddCampaign} categories={CATEGORIES} />
             </div>
           </div>
 
@@ -270,6 +297,14 @@ export default function CampaignsPage() {
           </div>
         </div>
       </div>
+
+      {/* Donate Dialog */}
+      <DonateDialog
+        campaign={selectedCampaign}
+        open={donateDialogOpen}
+        onOpenChange={setDonateDialogOpen}
+        onDonateSuccess={handleDonateSuccess}
+      />
     </AppLayout>
   )
 }
