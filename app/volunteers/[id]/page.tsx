@@ -79,6 +79,14 @@ interface Task {
 
 // Function to create default profile for new volunteers
 function createDefaultProfileFromBase(baseVolunteer: any): Volunteer {
+  // Generate default monthly stats for the past 4 months
+  const months = ['Oct', 'Nov', 'Dec', 'Jan']
+  const defaultMonthlyStats = months.map(month => ({
+    month,
+    tasks: 0,
+    hours: 0,
+  }))
+  
   return {
     id: baseVolunteer.id,
     name: baseVolunteer.name,
@@ -95,7 +103,7 @@ function createDefaultProfileFromBase(baseVolunteer: any): Volunteer {
     location: baseVolunteer.location || 'Not specified',
     ngoAssociations: baseVolunteer.ngoAssociations || [],
     taskHistory: [],
-    monthlyStats: [],
+    monthlyStats: defaultMonthlyStats,
   }
 }
 
@@ -556,46 +564,39 @@ export default function VolunteerProfilePage({ params }: { params: Promise<{ id:
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    {volunteer.monthlyStats.length === 0 ? (
-                      <div className="text-center py-8">
-                        <TrendingUp className="h-12 w-12 text-muted-foreground mx-auto mb-3 opacity-50" />
-                        <p className="text-muted-foreground">No performance analytics yet</p>
-                      </div>
-                    ) : (
-                      <div className="grid gap-6 sm:grid-cols-2">
-                        {/* Monthly Tasks Chart (simplified) */}
-                        <div>
-                          <p className="text-sm font-medium mb-4">Monthly Tasks</p>
-                          <div className="space-y-3">
-                            {volunteer.monthlyStats.map(stat => (
-                              <div key={stat.month} className="flex items-center gap-3">
-                                <span className="text-sm text-muted-foreground w-10">{stat.month}</span>
-                                <div className="flex-1">
-                                  <Progress value={(stat.tasks / 15) * 100} className="h-2" />
-                                </div>
-                                <span className="text-sm font-medium w-8">{stat.tasks}</span>
+                    <div className="grid gap-6 sm:grid-cols-2">
+                      {/* Monthly Tasks Chart (simplified) */}
+                      <div>
+                        <p className="text-sm font-medium mb-4">Monthly Tasks</p>
+                        <div className="space-y-3">
+                          {volunteer.monthlyStats.map(stat => (
+                            <div key={stat.month} className="flex items-center gap-3">
+                              <span className="text-sm text-muted-foreground w-10">{stat.month}</span>
+                              <div className="flex-1">
+                                <Progress value={(stat.tasks / 15) * 100} className="h-2" />
                               </div>
-                            ))}
-                          </div>
+                              <span className="text-sm font-medium w-8">{stat.tasks}</span>
+                            </div>
+                          ))}
                         </div>
+                      </div>
 
-                        {/* Monthly Hours */}
-                        <div>
-                          <p className="text-sm font-medium mb-4">Hours Contributed</p>
-                          <div className="space-y-3">
-                            {volunteer.monthlyStats.map(stat => (
-                              <div key={stat.month} className="flex items-center gap-3">
-                                <span className="text-sm text-muted-foreground w-10">{stat.month}</span>
-                                <div className="flex-1">
-                                  <Progress value={(stat.hours / 60) * 100} className="h-2" />
-                                </div>
-                                <span className="text-sm font-medium w-10">{stat.hours}h</span>
+                      {/* Monthly Hours */}
+                      <div>
+                        <p className="text-sm font-medium mb-4">Hours Contributed</p>
+                        <div className="space-y-3">
+                          {volunteer.monthlyStats.map(stat => (
+                            <div key={stat.month} className="flex items-center gap-3">
+                              <span className="text-sm text-muted-foreground w-10">{stat.month}</span>
+                              <div className="flex-1">
+                                <Progress value={(stat.hours / 60) * 100} className="h-2" />
                               </div>
-                            ))}
-                          </div>
+                              <span className="text-sm font-medium w-10">{stat.hours}h</span>
+                            </div>
+                          ))}
                         </div>
                       </div>
-                    )}
+                    </div>
                   </CardContent>
                 </Card>
               </div>
