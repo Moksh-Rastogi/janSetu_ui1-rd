@@ -89,10 +89,8 @@ export function FundDistributionChart({
     cx,
     cy,
     midAngle,
-    innerRadius,
     outerRadius,
     percent,
-    name,
   }: {
     cx: number
     cy: number
@@ -103,20 +101,20 @@ export function FundDistributionChart({
     name: string
   }) => {
     const RADIAN = Math.PI / 180
-    const radius = innerRadius + (outerRadius - innerRadius) * 1.4
+    const radius = outerRadius + 25
     const x = cx + radius * Math.cos(-midAngle * RADIAN)
     const y = cy + radius * Math.sin(-midAngle * RADIAN)
 
-    if (percent < 0.08) return null // Don't show label for very small slices
+    if (percent < 0.05) return null // Don't show label for very small slices
 
     return (
       <text
         x={x}
         y={y}
         fill="currentColor"
-        textAnchor={x > cx ? 'start' : 'end'}
+        textAnchor="middle"
         dominantBaseline="central"
-        className="text-xs font-medium fill-foreground"
+        className="text-xs font-semibold fill-foreground"
       >
         {`${(percent * 100).toFixed(0)}%`}
       </text>
@@ -135,15 +133,15 @@ export function FundDistributionChart({
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[280px] w-full">
+        <div className="h-[320px] w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
+            <PieChart margin={{ top: 30, right: 30, bottom: 30, left: 30 }}>
               <Pie
                 data={coloredData}
                 cx="50%"
-                cy="50%"
-                innerRadius={55}
-                outerRadius={90}
+                cy="45%"
+                innerRadius={50}
+                outerRadius={80}
                 paddingAngle={3}
                 dataKey="value"
                 labelLine={false}
