@@ -24,6 +24,7 @@ interface VolunteerContextType {
   volunteers: Volunteer[]
   addVolunteer: (volunteer: Volunteer) => void
   getVolunteerById: (id: string) => Volunteer | undefined
+  updateVolunteerAvailability: (volunteerId: string, availability: 'available' | 'busy' | 'offline') => void
 }
 
 const VolunteerContext = createContext<VolunteerContextType | undefined>(undefined)
@@ -39,8 +40,16 @@ export function VolunteerProvider({ children, initialVolunteers }: { children: R
     return volunteers.find(v => v.id === id)
   }
 
+  const updateVolunteerAvailability = (volunteerId: string, availability: 'available' | 'busy' | 'offline') => {
+    setVolunteers(prev =>
+      prev.map(v =>
+        v.id === volunteerId ? { ...v, availability } : v
+      )
+    )
+  }
+
   return (
-    <VolunteerContext.Provider value={{ volunteers, addVolunteer, getVolunteerById }}>
+    <VolunteerContext.Provider value={{ volunteers, addVolunteer, getVolunteerById, updateVolunteerAvailability }}>
       {children}
     </VolunteerContext.Provider>
   )

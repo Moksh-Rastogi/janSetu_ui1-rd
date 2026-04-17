@@ -8,6 +8,7 @@ import { AssignVolunteerModal } from '@/components/tasks/assign-volunteer-modal'
 import { NewTaskModal } from '@/components/tasks/new-task-modal'
 import { Button } from '@/components/ui/button'
 import { Plus, Filter } from 'lucide-react'
+import { useVolunteers } from '@/components/volunteers/volunteer-context'
 
 export interface Task {
   id: string
@@ -271,11 +272,12 @@ export default function TasksPage() {
   const [showFilters, setShowFilters] = useState(false)
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [showAssignModal, setShowAssignModal] = useState(false)
-  const [filters, setFilters] = useState({
-    priority: '' as string,
-    category: [] as string[],
-    assignee: '',
+  const [showNewTaskModal, setShowNewTaskModal] = useState(false)
+  const [filters, setFilters] = useState<TaskFilters>({
+    priority: null,
+    category: [],
   })
+  const { updateVolunteerAvailability } = useVolunteers()
   const [showNewTaskModal, setShowNewTaskModal] = useState(false)
 
   const handleTaskMove = (taskId: string, newStatus: Task['status']) => {
@@ -295,6 +297,8 @@ export default function TasksPage() {
         ? { ...task, assignedVolunteers: [...task.assignedVolunteers, volunteer] }
         : task
     ))
+    // Update volunteer availability to busy when assigned to a task
+    updateVolunteerAvailability(volunteer.id, 'busy')
     setShowAssignModal(false)
   }
 
@@ -304,6 +308,8 @@ export default function TasksPage() {
         ? { ...task, assignedVolunteers: task.assignedVolunteers.filter(v => v.id !== volunteerId) }
         : task
     ))
+    // Update volunteer availability to available when removed from task
+    updateVolunteerAvailability(volunteerId, 'available')
   }
 
   const handleAddNewTask = (newTask: Omit<Task, 'id' | 'aiAssigned'>) => {
@@ -335,9 +341,16 @@ export default function TasksPage() {
   }
 
   const handleCompleteTask = (taskId: string) => {
-    setTasks(tasks.map(task => 
-      task.id === taskId ? { ...task, status: 'completed' as const } : task
+    const task = tasks.find(t => t.id === taskId)
+    setTasks(tasks.map(t => 
+      t.id === taskId ? { ...t, status: 'completed' as const } : t
     ))
+    // Update all assigned volunteers to available when task is completed
+    if (task) {
+      task.assignedVolunteers.forEach(volunteer => {
+        updateVolunteerAvailability(volunteer.id, 'available')
+      })
+    }
   }
 
   const handleMoveToInProgress = (taskId: string) => {
