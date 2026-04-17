@@ -111,7 +111,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         )}
       >
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto px-4 py-6">
+        <nav className="flex-1 overflow-hidden px-4 py-6">
           <div className="space-y-1">
             {MENU_ITEMS.map((item) => {
               const Icon = item.icon
